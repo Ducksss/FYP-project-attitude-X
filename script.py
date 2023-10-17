@@ -15,19 +15,29 @@ def check_file_type(file_path):
     else:
         return "Other"
 
-
-# Provide the Resume file path as an argument
-file_path = "C:/Users/Admin/OneDrive - Singapore Polytechnic/Desktop/Desktop/FYP/Project Code/FYP-project-attitude-X/resume_data/Resume1.docx"  # Replace with the path to your file
+#Provide the Resume file path as an argument
+file_path = "resume_data/10MB_file.pdf"  
+#Check file type
 file_type = check_file_type(file_path)
+#Check file size
+size = os.path.getsize(file_path)
+print(size) #95772
 
-#extract text for docx
-if file_type == "DOCX":
-    text = docx2txt.process(file_path)
-#extract text for pdf
-elif file_type == "PDF":    
-    text = extract_text(file_path)
+
+#Text Extracting for file types and file size
+if size>10000000:#10 Million Bytes for 10MB
+    print('*************File size too large, please compress file or try again!*************')
 else:
-    #File type is not accepted
-    raise Exception("Filetype is not accepted")
+    #extract text for pdf
+    if file_type == "PDF":    
+        text = extract_text(file_path)
+        print("*************Successfully extracted PDF*************")
+        print(text)
+    elif file_type == "DOCX": #10 Million Bytes for 10MB
+        text = docx2txt.process(file_path)
+        print("*************Successfully extracted Word File*************")
+        print(text)
+    else:
+        #File type is not accepted
+        raise Exception("*************Filetype is not accepted*************")
 
-print(text)
