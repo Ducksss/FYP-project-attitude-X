@@ -31,12 +31,12 @@ else:
     #extract text for pdf
     if file_type == "PDF":    
         text = extract_text(file_path)
-        # print("*************Successfully extracted PDF*************")
-        # print(text)
+        #print("*************Successfully extracted PDF*************")
+        #print(text)
     elif file_type == "DOCX": #10 Million Bytes for 10MB
         text = docx2txt.process(file_path)
-        # print("*************Successfully extracted Word File*************")
-        # print(text)
+        #print("*************Successfully extracted Word File*************")
+        #print(text)
     else:
         #File type is not accepted
         raise Exception("*************Filetype is not accepted*************")
@@ -97,31 +97,39 @@ def extract_name_from_resume(text):
     name = None
 
     # Use regex pattern to find a potential name
-    #pattern = r"(\b[A-Z][a-z]+\b)\s(\b[A-Z][a-z]+\b)"
-    pattern = r"(\b[A-Z][A-Z]+\b)\s(\b[A-Z][A-Z]+\b)"
+    pattern = r"(\b[A-Z][a-z]+\b)\s(\b[A-Z][a-z]+\b)"
     match = re.search(pattern, text)
     if match:
         name = match.group()
 
     return name
 
-if __name__ == '__main__':
-    resume_text = text
+# if __name__ == '__main__':
+#     resume_text = text
 
-    name = extract_name_from_resume(resume_text)
-    if name:
-        print("Name:", name)
-    else:
-        print("Name not found")
+#     name = extract_name_from_resume(resume_text)
+#     if name:
+#         print("Name:", name)
+#     else:
+#         print("Name not found")
 
-    contact_number = extract_contact_number_from_resume(resume_text)
-    if contact_number:
-        print("Contact Number:", contact_number)
-    else:
-        print("Contact Number not found")
+#     contact_number = extract_contact_number_from_resume(resume_text)
+#     if contact_number:
+#         print("Contact Number:", contact_number)
+#     else:
+#         print("Contact Number not found")
 
-    email = extract_email_from_resume(resume_text)
-    if email:
-        print("Email:", email)
-    else:
-        print("Email not found")
+#     email = extract_email_from_resume(resume_text)
+#     if email:
+#         print("Email:", email)
+#     else:
+#         print("Email not found")
+
+
+
+import spacy                                                                                                                            
+
+nlp = spacy.load('en_core_web_trf')                                                                                                                  
+sents = nlp(text) 
+people = [ee for ee in sents.ents if ee.label_ == 'PERSON']        
+print(people)
