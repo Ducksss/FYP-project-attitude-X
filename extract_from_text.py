@@ -15,7 +15,7 @@ def extract_name(text):
 
     # Split the text into words, convert each word to lowercase with the first letter capitalized
     formatted_name = ' '.join(word.capitalize() for word in corrected_name.split())
-    return formatted_name
+    return formatted_name, people
 
 def extract_email(text):
     email = None
@@ -45,3 +45,18 @@ def extract_contact_number(text):
     formatted_contact_number = contact_number.replace(" ", "")
 
     return formatted_contact_number
+
+def extract_useful_words(text, people, email, contact_number):
+    #List of useless words, stopwords, blank lines, names, emails, contact number
+    # define the list of words you want to remove from the text
+    stopwords = [str(email), str(contact_number), "\n", 'the', 'of', 'and', 'is','to','in','a','from','by','that', 'with', 'this', 'as', 'an', 'are','its', 'at', 'for']
+    for i in people:
+        stopwords.append(str(i))
+    
+    # Remove specific words
+    for word in stopwords:
+        text = text.replace(word, "")
+    
+    formatted_text = text
+    
+    return formatted_text

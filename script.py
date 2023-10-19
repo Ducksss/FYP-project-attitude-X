@@ -4,7 +4,7 @@ import os
 ##Importing Functions
 from functions import check_file_type
 from convert_to_text import convertPDFToText, convertDocxToText
-from extract_from_text import extract_name, extract_email, extract_contact_number
+from extract_from_text import extract_name, extract_email, extract_contact_number, extract_useful_words
 
 #Provide the Resume file path as an argument
 file_path = "resume_data/Resume_2.docx"  
@@ -43,9 +43,11 @@ if __name__ == '__main__':
         print("Email:", email)
     else:
         print("Email not found")
-    name = extract_name(resume_text)
+    name, people_list = extract_name(resume_text)
     if name:
         print("Name:", name)
     else:
         print("Name not found")
-                                                                                                                           
+                        
+formatted_resume_text = extract_useful_words(resume_text, people_list, email, contact_number)                                                                                                           
+print(formatted_resume_text)
