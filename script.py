@@ -7,7 +7,7 @@ from convert_to_text import convertPDFToText, convertDocxToText
 from extract_from_text import extract_name, extract_email, extract_contact_number
 
 #Provide the Resume file path as an argument
-file_path = "resume_data/Resume_4.docx"  
+file_path = "resume_data/Resume_2.docx"  
 #Check file type
 file_type = check_file_type(file_path)
 #Check file size

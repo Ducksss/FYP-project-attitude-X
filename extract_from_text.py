@@ -6,7 +6,16 @@ def extract_name(text):
     nlp = spacy.load('en_core_web_trf')                                                                                                                  
     sents = nlp(text) 
     people = [ee for ee in sents.ents if ee.label_ == 'PERSON']       
-    return people[0]
+    # Remove newline characters and split the text into lines
+    name = str(people[0])
+
+    # Split the text by newline characters and take the first part
+    # some names may be falsely extracted to the next line
+    corrected_name = name.split("\n")[0]
+
+    # Split the text into words, convert each word to lowercase with the first letter capitalized
+    formatted_name = ' '.join(word.capitalize() for word in corrected_name.split())
+    return formatted_name
 
 def extract_email(text):
     email = None
@@ -17,7 +26,10 @@ def extract_email(text):
     if match:
         email = match.group()
 
-    return email    
+    # Remove all spaces from the email
+    formatted_email = email.replace(" ", "")
+
+    return formatted_email    
 
 def extract_contact_number(text):
     contact_number = None
@@ -28,5 +40,8 @@ def extract_contact_number(text):
     match = re.search(pattern, text)
     if match:
         contact_number = match.group()
+        
+    # Remove all spaces from the contact number
+    formatted_contact_number = contact_number.replace(" ", "")
 
-    return contact_number
+    return formatted_contact_number
