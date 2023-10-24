@@ -1,13 +1,14 @@
 ##Importing libraries
 import os
 
+
 ##Importing Functions
 from functions import check_file_type
 from convert_to_text import convertPDFToText, convertDocxToText
-from extract_from_text import extract_name, extract_email, extract_contact_number, extract_useful_words
+from extract_from_text import extract_name, extract_email, extract_contact_number, ner_extraction
 
 #Provide the Resume file path as an argument
-file_path = "resume_data/Resume_2.docx"  
+file_path = "resume_data/Resume_1.docx"  
 #Check file type
 file_type = check_file_type(file_path)
 #Check file size
@@ -48,6 +49,6 @@ if __name__ == '__main__':
         print("Name:", name)
     else:
         print("Name not found")
-                        
-formatted_resume_text = extract_useful_words(resume_text, people_list, email, contact_number)                                                                                                           
-print(formatted_resume_text)
+
+# remove_stop_words(resume_text, people_list, email, contact_number)
+ner_extraction(resume_text)

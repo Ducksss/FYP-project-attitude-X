@@ -1,6 +1,11 @@
 ##Import NER Libraries
 import re
 import spacy
+# from spacy.lang.en.stop_words import STOP_WORDS
+import vercel_ai
+import time
+client = vercel_ai.Client()
+
 
 def extract_name(text):
     nlp = spacy.load('en_core_web_trf')                                                                                                                  
@@ -46,17 +51,25 @@ def extract_contact_number(text):
 
     return formatted_contact_number
 
-def extract_useful_words(text, people, email, contact_number):
-    #List of useless words, stopwords, blank lines, names, emails, contact number
-    # define the list of words you want to remove from the text
-    stopwords = [str(email), str(contact_number), "\n", 'the', 'of', 'and', 'is','to','in','a','from','by','that', 'with', 'this', 'as', 'an', 'are','its', 'at', 'for']
-    for i in people:
-        stopwords.append(str(i))
-    
-    # Remove specific words
-    for word in stopwords:
-        text = text.replace(word, "")
-    
-    formatted_text = text
-    
-    return formatted_text
+def ner_extraction(text):
+        prompt = f'''
+                Resume:
+                {text}'''
+
+        prompt_template = f'''
+        Extract the name, technical skills, soft skills and languages only from the resume, do not do more than what was asked:
+        {prompt}'''
+
+        while True:
+            try:
+                for chunk in client.generate("replicate:replicate/llama-2-70b-chat", prompt_template, params = {
+                "replicate:replicate/llama-2-70b-chat": {
+                    "temperature": 0.75,
+                    "maximumLength": 1000,
+                    "topP": 1,
+                    "repetitionPenalty": 1
+                }}):
+                    print(chunk, end="", flush=True)
+                break
+            except:
+                pass
