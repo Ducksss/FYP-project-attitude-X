@@ -1,27 +1,18 @@
-#pip install -r requirements.txt
-
 ##Importing libraries
 import os
-import docx2txt
-from pdfminer.high_level import extract_text
 
-# Function to check file extension
-def check_file_type(file_path):
-    _, file_extension = os.path.splitext(file_path)
-    if file_extension.lower() == ".docx":
-        return "DOCX"
-    elif file_extension.lower() == ".pdf":
-        return "PDF"
-    else:
-        return "Other"
+
+##Importing Functions
+from functions import check_file_type
+from convert_to_text import convertPDFToText, convertDocxToText
+from extract_from_text import extract_name, extract_email, extract_contact_number, ner_extraction
 
 #Provide the Resume file path as an argument
-file_path = "resume_data/10MB_file.pdf"  
+file_path = "resume_data/Resume_1.docx"  
 #Check file type
 file_type = check_file_type(file_path)
 #Check file size
 size = os.path.getsize(file_path)
-print(size) #95772
 
 
 #Text Extracting for file types and file size
@@ -30,14 +21,34 @@ if size>10000000:#10 Million Bytes for 10MB
 else:
     #extract text for pdf
     if file_type == "PDF":    
-        text = extract_text(file_path)
-        print("*************Successfully extracted PDF*************")
-        print(text)
+        resume_text = convertPDFToText(file_path)
+        #print("*************Successfully extracted PDF*************")
+        #print(text)
     elif file_type == "DOCX": #10 Million Bytes for 10MB
-        text = docx2txt.process(file_path)
-        print("*************Successfully extracted Word File*************")
-        print(text)
+        resume_text = convertDocxToText(file_path)
+        #print("*************Successfully extracted Word File*************")
+        #print(text)
     else:
         #File type is not accepted
         raise Exception("*************Filetype is not accepted*************")
 
+if __name__ == '__main__':
+    contact_number = extract_contact_number(resume_text)
+    if contact_number:
+        print("Contact Number:", contact_number)
+    else:
+        print("Contact Number not found")
+
+    email = extract_email(resume_text)
+    if email:
+        print("Email:", email)
+    else:
+        print("Email not found")
+    name, people_list = extract_name(resume_text)
+    if name:
+        print("Name:", name)
+    else:
+        print("Name not found")
+
+# remove_stop_words(resume_text, people_list, email, contact_number)
+ner_extraction(resume_text)
