@@ -7,6 +7,7 @@ from convert_to_text import convertPDFToText, convertDocxToText
 from extract_from_text import extract_email, extract_contact_number
 from ner import jd_prompt_1, resume_prompt, convert_to_dict
 from similarity_matching import get_similarity_score
+from stopwords import filter_stopwords
   
 def file_processing(file_path):
     #Check file type
@@ -32,21 +33,25 @@ def file_processing(file_path):
 if __name__ == '__main__':
     #Provide the Job Description & Resume file path as an argument
     file_path_job = "sample_data/JD.docx"
-    file_path_resume = "sample_data/Resume_4.docx"
+    file_path_resume = "sample_data/Resume_1.docx"
     
     #Extract text for resume and job description
     jd_text = file_processing(file_path_job)
     resume_text = file_processing(file_path_resume)
     
+    #Filter the stopwords
+    resume_text_filter = filter_stopwords(resume_text)
+    jd_text_filter = filter_stopwords(jd_text)
+    
     #Getting Dictionary of details from Job Description
-    jd_result = jd_prompt_1(jd_text)
+    jd_result = jd_prompt_1(jd_text_filter)
     jd_dict = convert_to_dict(jd_result)
     print(f'*****************Job Description: {jd_dict}')
     
     #Getting Dictionary of details from resume
     contact_number = extract_contact_number(resume_text)
     email = extract_email(resume_text)
-    resume_result = resume_prompt(resume_text)
+    resume_result = resume_prompt(resume_text_filter)
     resume_dict = convert_to_dict(resume_result)
     resume_dict['contact_number'] = contact_number
     resume_dict['email'] = email
