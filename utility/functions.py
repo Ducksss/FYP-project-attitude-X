@@ -35,11 +35,11 @@ def print_score(jd_dict, resume_dict):
     techsk_score, softsk_score, lang_score = get_similarity_score(jd_dict, resume_dict)
     overall_score = techsk_score*0.4+softsk_score*0.4+lang_score*0.2
     
-    score_string = "Scoring for " + resume_dict['Name'] + "\n" + \
-                'Technical Skills Score: ' + techsk_score + "\n" + \
-                'Soft Skills Score: ' + softsk_score + "\n" + \
-                'Language Skills Score: ' + lang_score + "\n" + \
-                'Overall Skills Score: ' + str(overall_score) + "\n"
+    score_string = "Scoring for " + str(resume_dict['Name']) + "\n" + \
+                'Technical Skills Score: ' + str(techsk_score.item()) + "\n" + \
+                'Soft Skills Score: ' + str(softsk_score.item()) + "\n" + \
+                'Language Skills Score: ' + str(lang_score) + "\n" + \
+                'Overall Skills Score: ' + str(overall_score.item()) + "\n"
 
                     
     return score_string
