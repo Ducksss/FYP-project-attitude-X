@@ -1,14 +1,14 @@
+##Importing Libraries
 import streamlit as st
 from PIL import Image
 import streamlit_authenticator as stauth
-
-image = Image.open('static/drawmetricslogo.jpg')
-
-
 import yaml
 from yaml.loader import SafeLoader
+
+image = Image.open('docs/static/drawmetricslogo.jpg')
+
     # Loading config file
-with open('authentication/config.yaml') as file:
+with open('docs/authentication/config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
     # Creating the authenticator object
@@ -32,4 +32,4 @@ if st.session_state["authentication_status"]:
 elif st.session_state["authentication_status"] is False:
     st.error('Username/password is incorrect')
 elif st.session_state["authentication_status"] is None:
-    st.warning('Please enter your username and password')
+    st.warning('Please enter your username and password')
