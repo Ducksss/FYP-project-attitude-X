@@ -8,7 +8,8 @@ from extract_from_text import extract_email, extract_contact_number
 from ner import jd_prompt_1, resume_prompt, convert_to_dict
 from similarity_matching import get_similarity_score
 from stopwords import filter_stopwords
-  
+from database import insert_score
+
 def file_processing(file_path):
     #Check file type
     file_type = check_file_type(file_path)
@@ -67,6 +68,7 @@ if __name__ == '__main__':
     print(f'Language Skills Score: {lang_score}')
     print(f'Overall Skills Score:{overall_score}')
     
+    insert_score(resume_dict,techsk_score,softsk_score,lang_score,overall_score)
     
     #No. 1 Charlotte
     #0.49, 0.6 (overall language has problem)
