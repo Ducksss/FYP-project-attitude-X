@@ -1,18 +1,24 @@
 import streamlit as st
-from streamlit_login_auth_ui.widgets import __login__
 
-__login__obj = __login__(auth_token = "courier_auth_token",
-                    company_name = "Shims",
-                    width = 200, height = 250,
-                    logout_button_name = 'Logout', hide_menu_bool = False,
-                    hide_footer_bool = False,
-                    lottie_url = 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json')
+# Create an empty container
+placeholder = st.empty()
 
-LOGGED_IN= __login__obj.build_login_ui()
-username= __login__obj.get_username()
+actual_email = "email"
+actual_password = "password"
 
-if LOGGED_IN == True:
+# Insert a form in the container
+with placeholder.form("login"):
+    st.markdown("#### Enter your credentials")
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+    submit = st.form_submit_button("Login")
 
-   st.markdown("Your Streamlit Application Begins here!")
-   st.markdown(st.session_state)
-   st.write(username)
+if submit and email == actual_email and password == actual_password:
+    # If the form is submitted and the email and password are correct,
+    # clear the form/container and display a success message
+    placeholder.empty()
+    st.success("Login successful")
+elif submit and email != actual_email and password != actual_password:
+    st.error("Login failed")
+else:
+    pass
