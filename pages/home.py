@@ -69,4 +69,4 @@ if st.button("Process"):
     else:
         st.toast(':red[Hey!] Please upload job description and resume files!', icon='👺')
                 
-st.table(get_ovr_score_desc())
+st.dataframe(get_ovr_score_desc())
