@@ -27,7 +27,7 @@ col2.image(image, use_column_width=True)
 authenticator.login('Login', 'main')
 
 if st.session_state["authentication_status"]:
-    switch_page("home")
+    switch_page("Home")
     authenticator.logout('Logout',"sidebar",key="unique_key")
 elif st.session_state["authentication_status"] is False:
     st.error('Username/password is incorrect')

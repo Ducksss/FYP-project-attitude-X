@@ -32,10 +32,10 @@ def insert_score(resume_dict, techsk_score, softsk_score, lang_score, overall_sc
         "name": resume_dict["Name"],
         "email":resume_dict["email"],
         "contact_number":resume_dict["contact_number"], 
-        "technical_skills" : round(techsk_score.item()*100,2), 
-        "soft_skills": round(softsk_score.item()*100,2), 
-        "languages": round(lang_score*100,2), 
-        "overall_score": round(overall_score.item()*100,2)
+        "technical_skills" : round(techsk_score.item()*100,1), 
+        "soft_skills": round(softsk_score.item()*100,1), 
+        "languages": round(lang_score*100,1), 
+        "overall_score": round(overall_score.item()*100,1)
         }
 
     x = mycol.insert_one(mydict)
@@ -51,17 +51,14 @@ def get_ovr_score_desc():
 
 def get_techsk_score_desc():
     table = pd.DataFrame(mycol.find().sort('technical_skills',-1)).drop(['_id'],axis=1)
-
     return table
 
 def get_softsk_score_desc():
     table = pd.DataFrame(mycol.find().sort('soft_skills',-1)).drop(['_id'],axis=1)
-
     return table
 
 def get_lang_score_desc():
     table = pd.DataFrame(mycol.find().sort('languages',-1)).drop(['_id'],axis=1)
-
     return table
 
 def search_score(score):
