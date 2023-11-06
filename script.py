@@ -34,7 +34,7 @@ def file_processing(file_path):
 if __name__ == '__main__':
     #Provide the Job Description & Resume file path as an argument
     file_path_job = "sample_data/JD.docx"
-    file_path_resume = "sample_data/Resume_1.docx"
+    file_path_resume = "sample_data/Resume_2.docx"
     
     #Extract text for resume and job description
     jd_text = file_processing(file_path_job)
