@@ -1,9 +1,11 @@
 import streamlit as st
+from Login import authenticator
+from streamlit_extras.switch_page_button import switch_page
 
-st.set_page_config(
-    page_title="About Page",
-    page_icon="👋",
-)
+authenticator.logout('Logout','sidebar',key="unique_key")
+if st.session_state["authentication_status"] is None:
+    switch_page('Login')
+
 
 st.write("# Welcome to Attitude-X! 👋")
 

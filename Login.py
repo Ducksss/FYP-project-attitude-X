@@ -4,6 +4,7 @@ from PIL import Image
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
+from streamlit_extras.switch_page_button import switch_page
 
 image = Image.open('docs/static/drawmetricslogo.jpg')
 
@@ -26,9 +27,8 @@ col2.image(image, use_column_width=True)
 authenticator.login('Login', 'main')
 
 if st.session_state["authentication_status"]:
-    authenticator.logout('Logout', 'main', key='unique_key')
-    st.write(f'Welcome *{st.session_state["name"]}*')
-    st.title('Some content')
+    switch_page("about")
+    authenticator.logout('Logout',"sidebar",key="unique_key")
 elif st.session_state["authentication_status"] is False:
     st.error('Username/password is incorrect')
 elif st.session_state["authentication_status"] is None:

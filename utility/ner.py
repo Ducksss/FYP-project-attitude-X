@@ -19,7 +19,7 @@ def send_prompt(system_prompt, prompt):
         "HTTP-Referer": "http://localhost:3000", # To identify your app. Can be set to e.g. http://localhost:3000 for testing
         # "X-Title": $YOUR_APP_NAME, # Optional. Shows on openrouter.ai
     },
-    temperature = 0.2, #Randomness
+    temperature = 0, #Randomness
     max_tokens = 1000, #Maximum words
     top_p = 0.9 
     )
