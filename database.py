@@ -5,27 +5,10 @@ myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["resumeDB"]
 mycol = mydb["scores"]
 
-th_style = {  # for row hover use <tr> instead of <td>
-    'selector': 'th',
-    'props': [('background-color', 'rgba(108,142,191,0.5)')]
-}
-headers = {
-    'selector': 'th:not(.index_name)',
-    'props': 'color: white; font-size: 16px'
-}
-td_style = {
-    'selector': 'td',
-    'props': 'background-color: rgba(108,142,191,0.3)'
-}
-tdhover_style = {
-    'selector': 'tr:hover',
-    'props': [('background-color', 'rgba(108,142,191,0.9)'),('color','white')]
-}
-
 def set_table_style(table):
     blankIndex=[''] * len(table)
     table.index=blankIndex
-    return table.style.set_table_styles([th_style,headers,td_style,tdhover_style])
+    return table
 
 def insert_score(resume_dict, techsk_score, softsk_score, lang_score, overall_score):
     mydict =  {

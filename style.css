@@ -1,0 +1,63 @@
+section[role=button]{
+    background-image: linear-gradient(to right, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
+    width: 100%;
+    height: 150px;
+    text-transform: uppercase;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 16px;
+    color: #372549
+}
+
+[data-testid='stFileUploader'] button, [data-testid='stFileUploader'] small{
+    display: none;
+}
+
+.st-emotion-cache-1fttcpj.e1b2p2ww11{
+    width: max-content;
+    height: max-content;
+}
+
+.st-emotion-cache-9ycgxx.e1b2p2ww12{
+    visibility: hidden;
+    position: relative;
+}
+
+.st-emotion-cache-9ycgxx.e1b2p2ww12:after{
+    content: 'DRAG AND DROP HERE';
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+}
+
+.st-emotion-cache-u8hs99.e1b2p2ww14{
+    margin:auto;
+}
+
+.st-emotion-cache-6qob1r.eczjsme3{
+    background-image: linear-gradient(to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
+}
+
+/* Table Styles */
+
+thead tr{
+    background-color: #C8A2CA;
+}
+.st-emotion-cache-ugqr0y{
+    color: white;
+}
+
+td{
+    color: #372549;
+}
+
+tr:nth-child(2){
+    background-color: whitesmoke
+}
+
+tbody tr:hover{
+    background-color: aliceblue;
+    color: white;
+}
