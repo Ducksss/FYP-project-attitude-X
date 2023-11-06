@@ -2,12 +2,12 @@
 import os
 
 ##Importing Functions
-from functions import check_file_type
-from convert_to_text import convertPDFToText, convertDocxToText
-from extract_from_text import extract_email, extract_contact_number
-from ner import jd_prompt_1, resume_prompt, convert_to_dict
-from similarity_matching import get_similarity_score
-from stopwords import filter_stopwords
+from utility.functions import check_file_type
+from utility.convert_to_text import convertPDFToText, convertDocxToText
+from utility.extract_from_text import extract_email, extract_contact_number
+from utility.ner import jd_prompt_1, resume_prompt, convert_to_dict
+from utility.similarity_matching import get_similarity_score
+from utility.stopwords import filter_stopwords
   
 def file_processing(file_path):
     #Check file type

@@ -14,7 +14,7 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 # Import specific functions from the package
 from utility.functions import process_text, get_score
 from utility.convert_to_text import convertPDFToText, convertDocxToText
-4
+
 authenticator.logout('Logout','sidebar',key="unique_key")
 if st.session_state["authentication_status"] is None:
     switch_page('Login')
@@ -31,7 +31,7 @@ st.markdown(
     that matches and ranks candidates.
     
     ##### Note:
-    - **Rename Job Description file as "jd.docx" or "jd.pdf"**
+    - **Rename Job Description file as "job_description.docx" or ".pdf"**
     - **Upload anything between 1-30 resumes**
     - **File < 200MB in size and in PDF or Docx Format**
 """
@@ -53,7 +53,7 @@ if st.button("Process"):
                 text = convertPDFToText(file)
             
             #Check for Job Description file
-            if file.name.lower() == "jd.docx" or file.name.lower() == 'jd.pdf':
+            if file.name.lower() == "job_description.docx" or file.name.lower() == 'job_description.pdf':
                 jd_dict = process_text(text, 'JD')
             else:
                 resume_dict = process_text(text, 'Resume')
