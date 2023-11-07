@@ -1,7 +1,6 @@
 ##Importing Libraries
 import graphviz
 import streamlit as st
-# from Login import authenticator
 from st_pages import hide_pages
 
 ##Importing Funnctions
@@ -19,7 +18,7 @@ if logout:
     switch_page('Login')
 
 ##Start of Page
-st.write("# Welcome to Attitude-X! 👋")
+st.write("# Welcome to Attitude-X!👋")
 
 st.markdown(
     """
@@ -27,18 +26,36 @@ st.markdown(
     It integrates cutting-edge NLP technologies and LLMs (Language Model Models) for this purpose.
     
     **Done by group 3A62 from Singapore Polytechnic DAAA FYP Year 2023**
-    
+    """
+)
+
+st.divider()  # 👈 Draws a horizontal rule
+
+st.markdown(
+    """
     ### More about us:
     - Check out our [GitHub](https://github.com/27thRay/FYP-project-attitude-X)
     - Jump into our [Documentation](https://docs.streamlit.io)
-    
+    """
+)    
+
+st.divider()  # 👈 Draws a horizontal rule
+
+st.markdown(
+    """
     #### Contributors:
     - Raymond Loong Ng
     - Darryl Lim
     - Shaun Ho
+    """
+)
+
+st.divider()  # 👈 Draws a horizontal rule
     
+st.markdown(
+    """
     ### Flowchart:
-"""
+    """
 )
 
 # Create a graphlib graph object
