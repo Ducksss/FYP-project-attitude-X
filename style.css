@@ -13,8 +13,16 @@ section[role=button]{
     color: #372549
 }
 
-[data-testid='stFileUploader'] button, [data-testid='stFileUploader'] small{
+.e1b2p2ww15 .st-emotion-cache-10sgout.ef3psqc12{
     display: none;
+}
+
+.st-d0{
+    background-color: #fdfdfd;
+}
+
+.st-emotion-cache-1qe3szo{
+    font-size: 10.5px;
 }
 
 .st-emotion-cache-1fttcpj.e1b2p2ww11{
@@ -56,6 +64,10 @@ section[role=button]{
 
 input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],button[aria-label='Show password text'],button[aria-label='Hide password text'],div[data-testid="textInputRootElement"]{
     background-color: whitesmoke;
+}
+
+.e1f1d6gn4{
+    padding-top: 10px;
 }
 
 /* Table Styles */

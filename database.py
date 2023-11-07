@@ -34,20 +34,26 @@ def get_ovr_score_desc():
         table = set_table_style(table)
     return table
 
-def get_techsk_score_desc():
-    table = pd.DataFrame(mycol.find().sort('technical_skills',-1)).drop(['_id'],axis=1)
-    return table
-
-def get_softsk_score_desc():
-    table = pd.DataFrame(mycol.find().sort('soft_skills',-1)).drop(['_id'],axis=1)
-    return table
-
-def get_lang_score_desc():
-    table = pd.DataFrame(mycol.find().sort('languages',-1)).drop(['_id'],axis=1)
-    return table
-
-def search_score(score):
-    myquery = {"overall_score" : {"$gte": score}}
-    table = pd.DataFrame(mycol.find(myquery)).drop(['_id'],axis=1)
-
-    return table
+def search_score():
+    try:
+        score = float(st.session_state.score)
+        if st.session_state.var == 'Technical Skills':
+            variable = 'technical_skills'
+        elif st.session_state.var == 'Soft Skills':
+            variable = 'soft_skills'
+        elif st.session_state.var == 'Language':
+            variable = 'languages'
+        else:
+            variable = 'overall_score'
+        if st.session_state.eq == 'Less than Equal to':
+            equality = '$lte'
+        else:
+            equality = '$gte'
+        myquery = { variable : {equality: score}}
+        table = pd.DataFrame(mycol.find(myquery))
+        if len(table) != 0:
+            table = table.drop(['_id'],axis=1)
+        st.session_state.filter_table = table
+        return table
+    except:
+        return

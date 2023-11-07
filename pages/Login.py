@@ -21,13 +21,15 @@ actual_password = "password"
 # Insert a form in the container
 with placeholder.form("login"):
     #Set Logo
-    image = Image.open('docs/static/drawmetricslogo.jpg')
-    col1, col2, col3 = st.columns([1.3, 4, 1.3])
-    col2.image(image, use_column_width=True)
+    image = Image.open('docs/static/draw.png')
+    col1, col2, col3 = st.columns([2, 4, 2])
+    col2.image(image, use_column_width='auto')
 
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
-    submit = st.form_submit_button("Login")
+    col4, col5, col6 = st.columns(3)
+    with col5:
+        submit = st.form_submit_button("Login",use_container_width=True)
 
 if submit and email == actual_email and password == actual_password:
     # If the form is submitted and the email and password are correct,

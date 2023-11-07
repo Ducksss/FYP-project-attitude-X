@@ -11,7 +11,7 @@ import plotly.figure_factory as ff
 # Importing functions
 from utility.functions import process_text, get_score
 from utility.convert_to_text import convertPDFToText, convertDocxToText
-from database import get_ovr_score_desc, insert_score
+from database import get_ovr_score_desc, insert_score, search_score
 from streamlit_extras.switch_page_button import switch_page
 from utility.loadcss import local_css
 
@@ -19,9 +19,9 @@ from utility.loadcss import local_css
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
 sys.path.append(absolute_path)  # Add the absolute path to the system path
 
+local_css('style.css')
 #Hide pages after login
 hide_pages(["Login"])
-local_css('style.css')
 
 #Logout Button
 logout = st.sidebar.button("Logout")
@@ -77,7 +77,18 @@ if st.button("Process"):
     else:
         st.toast(':red[Hey!] Please upload job description and resume files!', icon='👺')
                 
-st.dataframe(get_ovr_score_desc())
+filter = st.slider('Filter',value=0,on_change=search_score, key='score')
+
+col1, col2 = st.columns(2)
+with col1:
+    equalities = st.radio('Equalities',options=["Greater than Equal to", "Lesser than Equal to"],key='eq',on_change=search_score)
+with col2:
+    variable = st.selectbox('Variable',options=['Overall Score','Technical Skills','Soft Skills','Language'],key='var',on_change=search_score)
+
+if filter != 0:
+    st.dataframe(st.session_state.filter_table, hide_index=True)
+else:
+    st.dataframe(get_ovr_score_desc(),hide_index=True)
 
 # #Bar Chart Ranking Plot
 # columns=["Resume 1", "Resume 2"]
