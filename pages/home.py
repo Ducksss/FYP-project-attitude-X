@@ -13,7 +13,7 @@ from utility.functions import process_text, get_score
 from utility.convert_to_text import convertPDFToText, convertDocxToText
 from database import get_ovr_score_desc, insert_score
 from streamlit_extras.switch_page_button import switch_page
-from app import local_css
+from utility.loadcss import local_css
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -21,18 +21,15 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 
 #Hide pages after login
 hide_pages(["Login"])
-
 local_css('style.css')
 
 #Logout Button
 logout = st.sidebar.button("Logout")
 if logout:
     switch_page('Login')
-    
-st.sidebar.success("Select a Page above")
 
 ##Start of Page
-st.title("Home Page")
+st.title("Home Page :house:")
 
 st.markdown(
     """

@@ -54,7 +54,7 @@ section[role=button]{
     color: #372549 ;
 }
 
-input[aria-label=Username],input[aria-label=Password],button[aria-label='Show password text'],button[aria-label='Hide password text'],div[data-testid="textInputRootElement"]{
+input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],button[aria-label='Show password text'],button[aria-label='Hide password text'],div[data-testid="textInputRootElement"]{
     background-color: whitesmoke;
 }
 

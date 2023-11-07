@@ -6,7 +6,7 @@ from st_pages import hide_pages
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
-from app import local_css
+from utility.loadcss import local_css
 
 local_css('style.css')
 
@@ -17,8 +17,6 @@ hide_pages(["Login"])
 logout = st.sidebar.button("Logout")
 if logout:
     switch_page('Login')
-
-st.sidebar.success("Select a Page above")
 
 ##Start of Page
 st.write("# Welcome to Attitude-X! 👋")
