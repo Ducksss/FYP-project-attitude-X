@@ -1,5 +1,7 @@
+#Importing Libraries
 import pymongo
 import pandas as pd
+import streamlit as st
 from bson import Decimal128
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -40,7 +42,6 @@ def insert_score(resume_dict, techsk_score, softsk_score, lang_score, overall_sc
         }
 
     x = mycol.insert_one(mydict)
-
     return
 
 def get_ovr_score_desc():

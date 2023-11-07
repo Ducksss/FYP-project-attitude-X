@@ -1,27 +1,35 @@
+##Importing libraries
 import os
 import sys
+import pymongo
+import numpy as np
+import pandas as pd
 import streamlit as st
-from Login import authenticator
+from st_pages import hide_pages
+import plotly.figure_factory as ff
+
+# Importing functions
+from utility.functions import process_text, get_score
+from utility.convert_to_text import convertPDFToText, convertDocxToText
+from database import get_ovr_score_desc, insert_score
 from streamlit_extras.switch_page_button import switch_page
 
-import pymongo
-from database import get_ovr_score_desc, insert_score
-
-# Get the absolute path to 'Utility Folder'
+# Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
 sys.path.append(absolute_path)  # Add the absolute path to the system path
 
-# Import specific functions from the package
-from utility.functions import process_text, get_score
-from utility.convert_to_text import convertPDFToText, convertDocxToText
+#Hide pages after login
+hide_pages(["Login"])
 
-authenticator.logout('Logout','sidebar',key="unique_key")
-if st.session_state["authentication_status"] is None:
+#Logout Button
+logout = st.sidebar.button("Logout")
+if logout:
     switch_page('Login')
-
-st.title("Home Page")
-
+    
 st.sidebar.success("Select a Page above")
+
+##Start of Page
+st.title("Home Page")
 
 st.markdown(
     """
@@ -70,3 +78,20 @@ if st.button("Process"):
         st.toast(':red[Hey!] Please upload job description and resume files!', icon='👺')
                 
 st.dataframe(get_ovr_score_desc())
+
+# #Bar Chart Ranking Plot
+# columns=["Resume 1", "Resume 2"]
+# barchart_data = get_ovr_score_desc()#This is dataframe
+# print(barchart_data)
+
+# st.bar_chart(barchart_data)
+
+# ##Score Distribution Plot
+# data = np.random.randn(200) - 2
+# labels = ['Score Distribution']
+
+# #Create distplot with custom bin_size
+# fig = ff.create_distplot([data], labels, bin_size=[.1, .25, .5])
+
+# #Plot
+# st.plotly_chart(fig, use_container_width=True)
