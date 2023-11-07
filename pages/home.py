@@ -1,11 +1,14 @@
 import os
 import sys
 import streamlit as st
-from Login import authenticator
+from Login import local_css #authenticator
 from streamlit_extras.switch_page_button import switch_page
 
-import pymongo
 from database import get_ovr_score_desc, insert_score
+
+# authenticator.logout('Logout','sidebar',key="unique_key")
+# if st.session_state["authentication_status"] is None:
+#     switch_page('Login')
 
 # Get the absolute path to 'Utility Folder'
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -15,13 +18,9 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 from utility.functions import process_text, get_score
 from utility.convert_to_text import convertPDFToText, convertDocxToText
 
-authenticator.logout('Logout','sidebar',key="unique_key")
-if st.session_state["authentication_status"] is None:
-    switch_page('Login')
+local_css('style.css')
 
 st.title("Home Page")
-
-st.sidebar.success("Select a Page above")
 
 st.markdown(
     """

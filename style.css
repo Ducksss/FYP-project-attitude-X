@@ -1,3 +1,7 @@
+#home-page, .e1nzilvr1{
+    color: #8a728b;
+}
+
 section[role=button]{
     background-image: linear-gradient(to right, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
     width: 100%;
@@ -38,6 +42,20 @@ section[role=button]{
 
 .st-emotion-cache-6qob1r.eczjsme3{
     background-image: linear-gradient(to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
+}
+
+.st-emotion-cache-10sgout.ef3psqc12,.ef3psqc7{
+    background-color: #372549 ;
+    color: #fdcbf1 ;
+}
+
+.st-emotion-cache-10sgout.ef3psqc12:hover,.ef3psqc7:hover{
+    background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+    color: #372549 ;
+}
+
+input[aria-label=Username],input[aria-label=Password],button[aria-label='Show password text'],button[aria-label='Hide password text'],div[data-testid="textInputRootElement"]{
+    background-color: whitesmoke;
 }
 
 /* Table Styles */

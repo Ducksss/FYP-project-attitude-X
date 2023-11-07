@@ -6,13 +6,17 @@ import yaml
 from yaml.loader import SafeLoader
 from streamlit_extras.switch_page_button import switch_page
 
-image = Image.open('docs/static/drawmetricslogo.jpg')
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-    # Loading config file
+local_css('style.css')
+
+# Loading config file
 with open('docs/authentication/config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
-    # Creating the authenticator object
+# Creating the authenticator object
 authenticator = stauth.Authenticate(
         config['credentials'],
         config['cookie']['name'], 
@@ -20,6 +24,8 @@ authenticator = stauth.Authenticate(
         config['cookie']['expiry_days'],
         config['preauthorized']
     )
+
+image = Image.open('docs/static/drawmetricslogo.jpg')
 
 col1, col2, col3 = st.columns([1.3, 4, 1.3])
 col2.image(image, use_column_width=True)
