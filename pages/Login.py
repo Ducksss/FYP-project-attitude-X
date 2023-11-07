@@ -10,7 +10,7 @@ from utility.loadcss import local_css
 local_css('style.css')
 
 #Hide Pages before Login
-hide_pages(["About", "Home"])
+hide_pages(["About", "Home", "Charts"])
 
 # Create an empty container
 placeholder = st.empty()

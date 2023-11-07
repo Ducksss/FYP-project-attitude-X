@@ -2,11 +2,8 @@
 import os
 import sys
 import pymongo
-import numpy as np
-import pandas as pd
 import streamlit as st
 from st_pages import hide_pages
-import plotly.figure_factory as ff
 
 # Importing functions
 from utility.functions import process_text, get_score
@@ -37,15 +34,21 @@ st.markdown(
     Upload multiple files, consisting of one Job Description and several Resumes. 
     Evaluate each candidate against the Job Description using an AI-based algorithm 
     that matches and ranks candidates.
-    
+    """
+)
+
+st.markdown(
+    """
     ##### Note:
     - **Rename Job Description file as "job_description.docx" or ".pdf"**
     - **Upload anything between 1-30 resumes**
     - **File < 200MB in size and in PDF or Docx Format**
-"""
+    """
 )
 
-upload_files = st.file_uploader("Upload Resumes and Job Descriptions in PDF/Word Format", type=["pdf", "docx"], accept_multiple_files=True)
+st.divider()  # 👈 Draws a horizontal rule
+
+upload_files = st.file_uploader(type=["pdf", "docx"], accept_multiple_files=True)
 
 #Check that process button was clicked
 if st.button("Process"):    
