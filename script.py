@@ -2,13 +2,14 @@
 import os
 
 ##Importing Functions
-from functions import check_file_type
-from convert_to_text import convertPDFToText, convertDocxToText
-from extract_from_text import extract_email, extract_contact_number
-from ner import jd_prompt_1, resume_prompt, convert_to_dict
-from similarity_matching import get_similarity_score
-from stopwords import filter_stopwords
-  
+from utility.functions import check_file_type
+from utility.convert_to_text import convertPDFToText, convertDocxToText
+from utility.extract_from_text import extract_email, extract_contact_number
+from utility.ner import jd_prompt_1, resume_prompt, convert_to_dict
+from utility.similarity_matching import get_similarity_score
+from utility.stopwords import filter_stopwords
+from database import insert_score
+
 def file_processing(file_path):
     #Check file type
     file_type = check_file_type(file_path)
@@ -33,7 +34,7 @@ def file_processing(file_path):
 if __name__ == '__main__':
     #Provide the Job Description & Resume file path as an argument
     file_path_job = "sample_data/JD.docx"
-    file_path_resume = "sample_data/Resume_1.docx"
+    file_path_resume = "sample_data/Resume_2.docx"
     
     #Extract text for resume and job description
     jd_text = file_processing(file_path_job)
@@ -67,6 +68,7 @@ if __name__ == '__main__':
     print(f'Language Skills Score: {lang_score}')
     print(f'Overall Skills Score:{overall_score}')
     
+    insert_score(resume_dict,techsk_score,softsk_score,lang_score,overall_score)
     
     #No. 1 Charlotte
     #0.49, 0.6 (overall language has problem)

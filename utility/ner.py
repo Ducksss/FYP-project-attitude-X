@@ -19,7 +19,7 @@ def send_prompt(system_prompt, prompt):
         "HTTP-Referer": "http://localhost:3000", # To identify your app. Can be set to e.g. http://localhost:3000 for testing
         # "X-Title": $YOUR_APP_NAME, # Optional. Shows on openrouter.ai
     },
-    temperature = 0.2, #Randomness
+    temperature = 0, #Randomness
     max_tokens = 1000, #Maximum words
     top_p = 0.9 
     )
@@ -52,7 +52,7 @@ def resume_prompt(resume_text):
     {resume_text}'''
 
     system_prompt = f'''
-    Strictly extract name of the applicant, and all possible and relevant skills, then group the skills in this format: 
+    Strictly extract name (without honorifics) of the applicant, and all possible and relevant skills, then group the skills in this format: 
     Name: ...
     Technical Skills: ... 
     Soft Skills: ... 
