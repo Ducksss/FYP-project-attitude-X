@@ -52,7 +52,7 @@ def search_score():
             variable = 'languages'
         else:
             variable = 'overall_score'
-        if st.session_state.eq == 'Less than Equal to':
+        if st.session_state.eq == 'Lesser than Equal to':
             equality = '$lte'
         else:
             equality = '$gte'

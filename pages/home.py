@@ -48,7 +48,7 @@ st.markdown(
 
 st.divider()  # 👈 Draws a horizontal rule
 
-upload_files = st.file_uploader(type=["pdf", "docx"], accept_multiple_files=True)
+upload_files = st.file_uploader('',type=["pdf", "docx"], accept_multiple_files=True)
 
 #Check that process button was clicked
 if st.button("Process"):    
