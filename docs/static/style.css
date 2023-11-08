@@ -17,7 +17,7 @@ section[role=button]{
     display: none;
 }
 
-.st-d0{
+div[data-baseweb=select] div{
     background-color: #fdfdfd;
 }
 
@@ -52,12 +52,12 @@ section[role=button]{
     background-image: linear-gradient(to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
 }
 
-.st-emotion-cache-10sgout.ef3psqc12,.ef3psqc7{
+.ef3psqc12,.ef3psqc7{
     background-color: #372549 ;
     color: #fdcbf1 ;
 }
 
-.st-emotion-cache-10sgout.ef3psqc12:hover,.ef3psqc7:hover{
+.ef3psqc12:hover,.ef3psqc7:hover{
     background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
     color: #372549 ;
 }
@@ -69,6 +69,19 @@ input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],bu
 .e1f1d6gn4{
     padding-top: 10px;
 }
+
+.ef3psqc13{
+    background-color: rgb(255, 106, 106);
+    color: white
+}
+
+.ef3psqc13:hover{
+    background-color: white;
+    color: rgb(255, 106, 106);
+
+}
+
+
 
 /* Table Styles */
 

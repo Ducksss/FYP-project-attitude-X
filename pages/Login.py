@@ -7,7 +7,7 @@ from st_pages import hide_pages
 from streamlit_extras.switch_page_button import switch_page
 from utility.loadcss import local_css
 
-local_css('style.css')
+local_css('./docs/static/style.css')
 
 #Hide Pages before Login
 hide_pages(["About", "Home", "Charts"])

@@ -10,7 +10,7 @@ from utility.loadcss import local_css
 from streamlit_extras.switch_page_button import switch_page
 
 ##Importing Functions
-from database import get_ovr_score_asc
+from database import get_ovr_score_desc
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -18,7 +18,7 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 
 #Hide pages after login
 hide_pages(["Login"])
-local_css('style.css')
+local_css('./docs/static/style.css')
 
 #Logout Button
 logout = st.sidebar.button("Logout")
@@ -29,14 +29,17 @@ if logout:
 st.title("Charts Page :chart_with_upwards_trend:")
 
 #Get database data for charts
-df = get_ovr_score_asc()
+if 'default_table' in st.session_state:
+    df = st.session_state.default_table
+else:
+    df = get_ovr_score_desc(0.4,0.4,0.2)
 
 #Altair Bar Chart Ranking Plot
 # Convert the 'overall_score' column to numeric (float) type
-df['overall_score'] = pd.to_numeric(df['overall_score'], errors='coerce')
-df['technical_skills'] = pd.to_numeric(df['technical_skills'], errors='coerce')
-df['soft_skills'] = pd.to_numeric(df['soft_skills'], errors='coerce')
-df['languages'] = pd.to_numeric(df['languages'], errors='coerce')
+# df['overall_score'] = pd.to_numeric(df['overall_score'], errors='coerce')
+# df['technical_skills'] = pd.to_numeric(df['technical_skills'], errors='coerce')
+# df['soft_skills'] = pd.to_numeric(df['soft_skills'], errors='coerce')
+# df['languages'] = pd.to_numeric(df['languages'], errors='coerce')
 
 option="overall_score"
 
@@ -76,9 +79,12 @@ st.markdown(
     """
 )
 ##Create the distplot with a cleaned 'overall_score' column
-dist_data = df.set_index('name')[option]
-labels = ['Score Distribution']
-fig = ff.create_distplot([dist_data], labels, bin_size=[1], show_curve=True)
+if len(df) > 2:
+    dist_data = df.set_index('name')[option]
+    labels = ['Score Distribution']
+    fig = ff.create_distplot([dist_data], labels, bin_size=[1], show_curve=True)
 
-##Plot
-st.plotly_chart(fig)
+    #Plot
+    st.plotly_chart(fig)
+else:
+    st.error('Make sure table has at least 2 applicants!',icon='🚩')
