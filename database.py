@@ -40,12 +40,14 @@ def get_ovr_score_desc(w1,w2,w3):
 
 def search_score(table):
     try:
-        if ['score','var','eq'] not in st.session_state:
+        if 'score' not in st.session_state:
             score = 0
-            variable = 'overall_score'
-            equality = '>='
         else:
             score = float(st.session_state.score)
+
+        if 'var' not in st.session_state:
+            variable = 'overall_score'
+        else:
             if st.session_state.var == 'Technical Skills':
                 variable = 'technical_skills'
             elif st.session_state.var == 'Soft Skills':
@@ -54,10 +56,15 @@ def search_score(table):
                 variable = 'languages'
             else:
                 variable = 'overall_score'
+
+        if 'eq' not in st.session_state:
+            equality = '>='
+        else:
             if st.session_state.eq == 'Lesser than Equal to':
                 equality = '<='
             else:
                 equality = '>='
+
         myquery = f'{variable}{equality}{score}'
         table = table.query(myquery)
         return table
