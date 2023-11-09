@@ -4,10 +4,10 @@ import os
 
 openai.api_base = 'https://api.deepinfra.com/v1/openai'
 
-if 'config.json' not  in os.listdir('./docs/'):
+if 'config.json' in os.listdir('./docs/'):
     with open('./docs/config.json') as config_file:
         config = json.load(config_file)
-        openai.api_key = config['api_key']
+        openai.api_key = config['api-key']
 else:
     openai.api_key = os.environ.get('API_KEY')
 

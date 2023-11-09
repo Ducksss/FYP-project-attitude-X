@@ -1,12 +1,18 @@
 #Importing libraries
+import os
+import sys
+import time
 from PIL import Image
 import streamlit as st
 from st_pages import hide_pages
-import time
 
 #Importing functions
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
+
+# Set up path to utility folder
+absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
+sys.path.append(absolute_path)  # Add the absolute path to the system path
 
 # Create Class instance
 dataprocessor = dataProcessor()

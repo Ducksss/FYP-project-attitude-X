@@ -7,7 +7,7 @@ from st_pages import hide_pages
 import pandas as pd
 
 # Importing functions
-from database import get_ovr_score_desc, insert_score, callback, remove_rows
+from database import get_ovr_score_desc, insert_score, callback
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
 
@@ -55,16 +55,16 @@ st.markdown(
 st.markdown(
     """
     ##### Note:
-    - **Rename Job Description file as "job_description.docx" or ".pdf"**
+    - **Rename Job Description file as "job_description.pdf"**
     - **Upload anything between 1-30 resumes**
-    - **File < 200MB in size and in PDF or Docx Format**
+    - **File < 200MB in size and in PDF Format**
     """
 )
 
 st.divider()  # 👈 Draws a horizontal rule
 
 with st.form("Upload Form",clear_on_submit=True):
-    upload_files = st.file_uploader('Upload Files',type=["pdf", "docx"], accept_multiple_files=True,label_visibility='hidden')
+    upload_files = st.file_uploader('Upload Files',type=["pdf"], accept_multiple_files=True,label_visibility='hidden')
 
     #Check that process button was clicked
     if st.form_submit_button("Process"):    
@@ -74,14 +74,11 @@ with st.form("Upload Form",clear_on_submit=True):
             resume_array = []
             #Loop through each file
             for file in upload_files:
-                #Check file type pdf or docx and convert to text
-                if file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                    text = dataprocessor.convertDocxToText(file)
-                elif file.type == "application/pdf":
-                    text = dataprocessor.convertPDFToText(file)
+                #Convert PDF to Text
+                text = dataprocessor.convertPDFToText(file)
                 
                 #Check for Job Description file
-                if file.name.lower() == "job_description.docx" or file.name.lower() == 'job_description.pdf':
+                if file.name.lower() == 'job_description.pdf':
                     jd_dict = dataprocessor.process_text(text, 'JD')
                 else:
                     resume_dict = dataprocessor.process_text(text, 'Resume')

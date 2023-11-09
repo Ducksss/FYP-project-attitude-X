@@ -1,11 +1,5 @@
-# 1.conversion for pdf and doc
-# 2. extract phone number and email
-# 3. process the text and get score
-# 4. Load css
-
 ##Import Extraction Libraries
 import re
-import docx2txt
 import streamlit as st
 from pdfminer.high_level import extract_text
 
@@ -30,10 +24,6 @@ class dataProcessor:
     #Functions for conversion PDF
     def convertPDFToText(self,file_path):
         return extract_text(file_path)
-    
-    #Function for conversion Word
-    def convertDocxToText(self,file_path):
-        return docx2txt.process(file_path)
     
     #Regex function for extracting email
     def extract_email(self,text):

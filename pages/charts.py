@@ -57,22 +57,24 @@ st.markdown(
     """
 )
 #Sort in descending overall_score
-chart = alt.Chart(df).mark_bar().encode(
-    x=alt.X(option),
-    y=alt.Y('name').sort('-x'),
-    color='name',
-).interactive()
+if len(df) >= 1:
+    chart = alt.Chart(df).mark_bar().encode(
+        x=alt.X(option),
+        y=alt.Y('name').sort('-x'),
+        color='name',
+    ).interactive()
 
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
-
-with tab1:
-    # Use the Streamlit theme.
-    # This is the default. So you can also omit the theme argument.
-    st.altair_chart(chart, theme="streamlit", use_container_width=True)
-with tab2:
-    # Use the native Altair theme.
-    st.altair_chart(chart, theme=None, use_container_width=True)
-
+    tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
+    
+    with tab1:
+        # Use the Streamlit theme.
+        # This is the default. So you can also omit the theme argument.
+        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+    with tab2:
+        # Use the native Altair theme.
+        st.altair_chart(chart, theme=None, use_container_width=True)
+else:
+    st.error('Make sure table has at least 1 applicants!',icon='🚩')
 
 ###Score Distribution Plot
 st.markdown(
