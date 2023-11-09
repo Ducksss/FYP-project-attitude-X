@@ -2,7 +2,6 @@
 import pymongo
 import pandas as pd
 import streamlit as st
-from bson import Decimal128
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["resumeDB"]
@@ -36,33 +35,8 @@ def get_ovr_score_desc(w1,w2,w3):
     if len(table) != 0:
         table = aggregate_table(table,w1,w2,w3)
         table = search_score(table)
-        print(table)
     st.session_state.default_table = table
     return table
-
-# def search_score():
-#     try:
-#         score = float(st.session_state.score)
-#         if st.session_state.var == 'Technical Skills':
-#             variable = 'technical_skills'
-#         elif st.session_state.var == 'Soft Skills':
-#             variable = 'soft_skills'
-#         elif st.session_state.var == 'Language':
-#             variable = 'languages'
-#         else:
-#             variable = 'overall_score'
-#         if st.session_state.eq == 'Lesser than Equal to':
-#             equality = '$lte'
-#         else:
-#             equality = '$gte'
-#         myquery = { variable : {equality: score}}
-#         table = pd.DataFrame(mycol.find(myquery))
-#         if len(table) != 0:
-#             table = table.drop(['_id'],axis=1)
-#         st.session_state.filter_table = table
-#         return table
-#     except:
-#         return
 
 def search_score(table):
     try:
@@ -103,18 +77,15 @@ def callback():
             rows_to_delete.append(idx)
 
         if len(rows_to_delete)==1:
-            #print(rows_to_delete[0])
             count = df._get_value(rows_to_delete[0],'_id')
             count = int(count)
-            #print(count)
             remove_rows(count)
+            st.toast(":green[Deletion Complete]!", icon='🎉')
 
         elif len(rows_to_delete)> 1:
             while len(rows_to_delete) > 0:
-                #print(i)
                 count = df._get_value(rows_to_delete[0],'_id')
                 count = int(count)
-                #print(count)
                 remove_rows(count)
                 rows_to_delete.pop(0)
         else:
@@ -123,5 +94,3 @@ def callback():
     st.session_state["data"] = (
         st.session_state["data"].drop(index = rows_to_delete,axis=0).reset_index(drop=True)
     )
-    
-    st.toast(":green[Deletion Complete]!", icon='🎉')

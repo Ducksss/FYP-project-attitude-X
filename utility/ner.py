@@ -1,7 +1,15 @@
 import openai
+import json
+import os
 
 openai.api_base = 'https://api.deepinfra.com/v1/openai'
-openai.api_key = 'UJGOceHjyxw1ONsrcllJzmXDffiF8XRK'
+
+if 'config.json' not  in os.listdir('./docs/'):
+    with open('./docs/config.json') as config_file:
+        config = json.load(config_file)
+        openai.api_key = config['api_key']
+else:
+    openai.api_key = os.environ.get('API_KEY')
 
 # resume_temp = resume.replace('\n','')
 
@@ -91,7 +99,6 @@ def convert_to_dict(text):
     for i in test:
         # Get variable after the first instance of ":"
         templist = i.split(':',1)
-        # print(templist)
         if len(templist) <= 1:
             pass
         else:

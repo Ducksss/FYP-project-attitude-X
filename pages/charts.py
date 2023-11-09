@@ -6,7 +6,7 @@ import altair as alt
 import streamlit as st
 from st_pages import hide_pages
 import plotly.figure_factory as ff
-from utility.loadcss import local_css
+from utility.classes import dataProcessor
 from streamlit_extras.switch_page_button import switch_page
 
 ##Importing Functions
@@ -18,7 +18,9 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 
 #Hide pages after login
 hide_pages(["Login"])
-local_css('./docs/static/style.css')
+dataprocessor = dataProcessor()
+
+dataprocessor.local_css()
 
 #Logout Button
 logout = st.sidebar.button("Logout")
@@ -79,7 +81,7 @@ st.markdown(
     """
 )
 ##Create the distplot with a cleaned 'overall_score' column
-if len(df) > 2:
+if len(df) >= 2:
     dist_data = df.set_index('name')[option]
     labels = ['Score Distribution']
     fig = ff.create_distplot([dist_data], labels, bin_size=[1], show_curve=True)

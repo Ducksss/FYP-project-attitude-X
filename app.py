@@ -1,7 +1,6 @@
 #Importing libraries
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
-from utility.loadcss import local_css
 #Importing functions
 from streamlit_extras.switch_page_button import switch_page
 

@@ -5,9 +5,12 @@ from st_pages import hide_pages
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
-from utility.loadcss import local_css
+from utility.classes import dataProcessor
 
-local_css('./docs/static/style.css')
+# Create Class instance
+dataprocessor = dataProcessor()
+
+dataprocessor.local_css()
 
 #Hide Pages after login
 hide_pages(["Login"])

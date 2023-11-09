@@ -81,7 +81,9 @@ input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],bu
 
 }
 
-
+div[data-testid="stForm"]{
+    border:0
+}
 
 /* Table Styles */
 

@@ -2,12 +2,16 @@
 from PIL import Image
 import streamlit as st
 from st_pages import hide_pages
+import time
 
 #Importing functions
 from streamlit_extras.switch_page_button import switch_page
-from utility.loadcss import local_css
+from utility.classes import dataProcessor
 
-local_css('./docs/static/style.css')
+# Create Class instance
+dataprocessor = dataProcessor()
+
+dataprocessor.local_css()
 
 #Hide Pages before Login
 hide_pages(["About", "Home", "Charts"])
@@ -31,13 +35,15 @@ with placeholder.form("login"):
     with col5:
         submit = st.form_submit_button("Login",use_container_width=True)
 
-if submit and email == actual_email and password == actual_password:
-    # If the form is submitted and the email and password are correct,
-    # clear the form/container and display a success message
-    placeholder.empty()
-    st.success("Login successful")
-    switch_page('About')
-elif submit and email != actual_email and password != actual_password:
-    st.error("Login failed")
-else:
-    pass
+if submit:
+    if email == actual_email and password == actual_password:
+        # If the form is submitted and the email and password are correct,
+        # clear the form/container and display a success message
+        placeholder.empty()
+        st.success("Login successful")
+        time.sleep(0.5)
+        switch_page('About')
+    elif email != actual_email or password != actual_password:        
+        st.toast(":red Login failed",icon='🚨')
+    else:
+        pass
