@@ -15,8 +15,6 @@ RUN git clone -b Darryl_Docker https://github.com/27thRay/FYP-project-attitude-X
 
 # Navigate into the cloned directory
 WORKDIR /FYP-project-attitude-X
-COPY . /FYP-project-attitude-X
-ADD . .
 
 #Install app's python dependencies in container
 RUN pip3 install --verbose -r requirements.txt
