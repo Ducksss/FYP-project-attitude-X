@@ -4,20 +4,29 @@ services:
   mongodb:
     build:
       context: ./mongoDocker/
+    container_name: database
     ports:
       - "27017:27017"
+    networks:
+      - mongo-network
     volumes:
       - mongodb-data:/data/db
 
   streamlit-app:
     build:
       context: .
+    container_name: streamlit-app
     ports:
       - "8501:8501"
     depends_on:
       - mongodb
+    networks:
+      - mongo-network
     environment:
       - MONGO_URL=mongodb://mongodb:27017/
 
 volumes:
   mongodb-data:
+
+networks:
+  mongo-network:
