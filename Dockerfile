@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Git clone the repo with a specific branch
-RUN git clone -b Darryl_Docker https://github.com/27thRay/FYP-project-attitude-X.git
+RUN git clone https://github.com/27thRay/FYP-project-attitude-X.git
 
 # Navigate into the cloned directory
 WORKDIR /FYP-project-attitude-X
