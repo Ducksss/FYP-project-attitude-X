@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  mongodb:
+  database:
     build:
       context: ./mongoDocker/
     container_name: database
@@ -19,11 +19,11 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      - mongodb
+      - database
     networks:
       - mongo-network
     environment:
-      - MONGO_URL=mongodb://mongodb:27017/
+      - API_KEY=UJGOceHjyxw1ONsrcllJzmXDffiF8XRK
 
 volumes:
   mongodb-data:
