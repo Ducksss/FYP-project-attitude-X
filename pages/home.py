@@ -86,8 +86,8 @@ with st.form("Upload Form",clear_on_submit=True):
             
             if jd_dict and resume_array:
                 for resume_dict in resume_array:
-                    techsk_score, softsk_score, lang_score, overall_score = dataprocessor.get_score(jd_dict, resume_dict)
-                    insert_score(counter, resume_dict, techsk_score, softsk_score, lang_score, overall_score)
+                    techsk_score, softsk_score, lang_score = dataprocessor.get_score(jd_dict, resume_dict)
+                    insert_score(counter, resume_dict, techsk_score, softsk_score, lang_score)
                     counter += 1
                     st.toast(f"Resume for {resume_dict['Name']} :green[successfully uploaded]!", icon='🎉')
             else:

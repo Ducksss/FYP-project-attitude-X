@@ -2,7 +2,6 @@
 import pymongo
 import pandas as pd
 import streamlit as st
-import os
 
 mongo_url = "mongodb://database:27017"
 myclient = pymongo.MongoClient(mongo_url)
@@ -17,7 +16,7 @@ def aggregate_table(table,w1,w2,w3):
     return table
 
 
-def insert_score(counter,resume_dict, techsk_score, softsk_score, lang_score, overall_score):
+def insert_score(counter,resume_dict, techsk_score, softsk_score, lang_score):
     mydict =  {
         "_id": counter,
         "name": resume_dict["Name"],
@@ -26,7 +25,6 @@ def insert_score(counter,resume_dict, techsk_score, softsk_score, lang_score, ov
         "technical_skills" : float(techsk_score), 
         "soft_skills": float(softsk_score), 
         "languages": float(lang_score), 
-        "overall_score": float(overall_score)
         }
 
     x = mycol.insert_one(mydict)

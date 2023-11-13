@@ -74,11 +74,9 @@ class dataProcessor:
     #Calculating Scores
     def get_score(self, jd_dict, resume_dict):
         techsk_score, softsk_score, lang_score = get_similarity_score(jd_dict, resume_dict)
-        overall_score = techsk_score*0.4+softsk_score*0.4+lang_score*0.2
         
         techsk_score = round(techsk_score.item()*100,1)
         softsk_score = round(softsk_score.item()*100,1)
         lang_score = round(lang_score*100,1)
-        overall_score = round(overall_score.item()*100,1)
         
-        return techsk_score, softsk_score, lang_score, overall_score
+        return techsk_score, softsk_score, lang_score
