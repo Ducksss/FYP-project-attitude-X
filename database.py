@@ -2,8 +2,10 @@
 import pymongo
 import pandas as pd
 import streamlit as st
+import os
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mongo_url = os.environ.get("MONGO_URL", "mongodb://mongodb:27017/")
+myclient = pymongo.MongoClient(mongo_url)
 mydb = myclient["resumeDB"]
 mycol = mydb["scores"]
 
