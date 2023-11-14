@@ -70,11 +70,8 @@ st.markdown(
 # Create a graphlib graph object
 graph = graphviz.Digraph()
 graph.edge('Files', 'PDF')
-graph.edge('Files', 'Docx')
 graph.edge('PDF', 'pdfminer library')
-graph.edge('Docx', 'doc2txt library')
 graph.edge('pdfminer library', 'raw text')
-graph.edge('doc2txt library', 'raw text')
 graph.edge('raw text', 'stopwords removal (spaCy model)')
 graph.edge('stopwords removal (spaCy model)', 'Job Description')
 graph.edge('stopwords removal (spaCy model)', 'Resume')
