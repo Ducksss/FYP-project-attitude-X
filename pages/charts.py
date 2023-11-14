@@ -43,6 +43,12 @@ else:
 # df['soft_skills'] = pd.to_numeric(df['soft_skills'], errors='coerce')
 # df['languages'] = pd.to_numeric(df['languages'], errors='coerce')
 
+st.markdown(
+    """
+    ##### Top 20ᵗʰ Percentile:
+    """
+)
+st.dataframe(df.sort_values('overall_score', ascending = False ).iloc[:round(20/100 * (len(df)+1))],hide_index=True)
 option="overall_score"
 
 option = st.selectbox(

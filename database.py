@@ -34,8 +34,8 @@ def get_ovr_score_desc(w1,w2,w3):
     table = pd.DataFrame(mycol.find())
     if len(table) != 0:
         table = aggregate_table(table,w1,w2,w3)
+        st.session_state.default_table = table
         table = search_score(table)
-    st.session_state.default_table = table
     return table
 
 def search_score(table):
