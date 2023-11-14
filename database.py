@@ -3,7 +3,7 @@ import pymongo
 import pandas as pd
 import streamlit as st
 
-mongo_url = "mongodb://database:27017"
+mongo_url = "mongodb://localhost:27017"
 myclient = pymongo.MongoClient(mongo_url)
 mydb = myclient["resumeDB"]
 mycol = mydb["scores"]

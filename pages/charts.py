@@ -70,15 +70,8 @@ if len(df) >= 1:
         color='name',
     ).interactive()
 
-    tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
-    
-    with tab1:
-        # Use the Streamlit theme.
-        # This is the default. So you can also omit the theme argument.
-        st.altair_chart(chart, theme="streamlit", use_container_width=True)
-    with tab2:
-        # Use the native Altair theme.
-        st.altair_chart(chart, theme=None, use_container_width=True)
+    st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
 else:
     st.error('Make sure table has at least 1 applicants!',icon='🚩')
 
