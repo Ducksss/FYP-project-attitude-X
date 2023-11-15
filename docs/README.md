@@ -9,3 +9,6 @@ Instructions to run code:
 4. cd into /FYP-project-attitude-X
 5. run the command:
 docker-compose up --build
+
+#To clear images
+docker system prune --all --volumes --force
