@@ -153,7 +153,8 @@ else:
 
     # Make Delete be the first column
     modified_df = modified_df[["Delete"] + modified_df.columns[:-1].tolist()]
-    modified_df = modified_df[["Delete","_id","name","overall_score","technical_skills","soft_skills","languages","email","contact_number"]]
+    if len(modified_df) > 0:
+        modified_df = modified_df[["Delete","_id","name","overall_score","technical_skills","soft_skills","languages","email","contact_number"]]
 
     st.data_editor(
         modified_df,
