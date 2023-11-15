@@ -31,8 +31,9 @@ if logout:
 st.title("Charts Page :chart_with_upwards_trend:")
 
 #Get database data for charts
-if 'default_table' in st.session_state:
-    df = st.session_state.default_table
+if len(get_ovr_score_desc(0.4,0.4,0.2)) > 0:
+    if 'default_table' in st.session_state:
+        df = st.session_state.default_table
 else:
     df = get_ovr_score_desc(0.4,0.4,0.2)
 
@@ -48,7 +49,13 @@ st.markdown(
     ##### Top 20ᵗʰ Percentile:
     """
 )
-st.dataframe(df.sort_values('overall_score', ascending = False ).iloc[:round(20/100 * (len(df)+1))],hide_index=True)
+
+if len(df) >= 1:
+    st.dataframe(df.sort_values('overall_score', ascending = False ).iloc[:round(20/100 * (len(df)+1))],hide_index=True)
+else:
+    st.error('Make sure table has at least 1 applicant!',icon='🚩')
+
+
 option="overall_score"
 
 option = st.selectbox(
@@ -73,7 +80,7 @@ if len(df) >= 1:
     st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
 else:
-    st.error('Make sure table has at least 1 applicants!',icon='🚩')
+    st.error('Make sure table has at least 1 applicant!',icon='🚩')
 
 ###Score Distribution Plot
 st.markdown(
