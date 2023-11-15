@@ -50,10 +50,10 @@ st.markdown(
     """
 )
 
-if len(df) >= 1:
+if len(df) >= 2:
     st.dataframe(df.sort_values('overall_score', ascending = False ).iloc[:round(20/100 * (len(df)+1))],hide_index=True)
 else:
-    st.error('Make sure table has at least 1 applicant!',icon='🚩')
+    st.error('Make sure table has at least 2 applicants!',icon='🚩')
 
 
 option="overall_score"

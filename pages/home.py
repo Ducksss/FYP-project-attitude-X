@@ -29,9 +29,9 @@ if logout:
     switch_page('Login')
 
 ##Start of Page
-
-if 'default_table' in st.session_state:
-    df = st.session_state.default_table
+if len(get_ovr_score_desc(0.4,0.4,0.2)) > 0:
+    if 'default_table' in st.session_state:
+        df = st.session_state.default_table
 else:
     df = get_ovr_score_desc(0.4,0.4,0.2)
 
