@@ -51,6 +51,7 @@ st.markdown(
 )
 
 if len(df) >= 2:
+    df = df[["_id","name","overall_score","technical_skills","soft_skills","languages","email","contact_number"]]
     st.dataframe(df.sort_values('overall_score', ascending = False ).iloc[:round(20/100 * (len(df)+1))],hide_index=True)
 else:
     st.error('Make sure table has at least 2 applicants!',icon='🚩')
