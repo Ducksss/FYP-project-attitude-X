@@ -32,9 +32,10 @@ class dataProcessor:
         match = re.search(pattern, text)
         if match:
             self.email = match.group()
-
-        # Remove all spaces from the email
-        formatted_email = self.email.replace(" ", "")
+            # Remove all spaces from the email
+            formatted_email = self.email.replace(" ", "")
+        else:
+            formatted_email = "NA"
 
         return formatted_email    
 
@@ -47,10 +48,10 @@ class dataProcessor:
         match = re.search(pattern, text)
         if match:
             self.contact_number = match.group()
+            formatted_contact_number = self.contact_number.replace(" ", "")
+        else:
+            formatted_contact_number = "NA"
             
-        # Remove all spaces from the contact number
-        formatted_contact_number = self.contact_number.replace(" ", "")
-
         return formatted_contact_number
     
     # Calling NER & Stopwords

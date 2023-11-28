@@ -39,27 +39,6 @@ st.markdown(
 )
 
 st.divider()  # 👈 Draws a horizontal rule
-
-st.markdown(
-    """
-    ### More about us:
-    - Check out our [GitHub](https://github.com/27thRay/FYP-project-attitude-X)
-    - Jump into our [Documentation](https://docs.streamlit.io)
-    """
-)    
-
-st.divider()  # 👈 Draws a horizontal rule
-
-st.markdown(
-    """
-    #### Contributors:
-    - Raymond Loong Ng
-    - Darryl Lim
-    - Shaun Ho
-    """
-)
-
-st.divider()  # 👈 Draws a horizontal rule
     
 st.markdown(
     """
@@ -85,3 +64,24 @@ graph.edge('Job Description Dictionary (regex library)', 'Similarity scoring (Be
 graph.edge('Similarity scoring (Bert model)', 'Output.csv')
 
 st.graphviz_chart(graph)
+
+st.divider()  # 👈 Draws a horizontal rule
+
+st.markdown(
+    """
+    ### More about us:
+    - Check out our [GitHub](https://github.com/27thRay/FYP-project-attitude-X)
+    - Jump into our [Documentation](https://docs.streamlit.io)
+    """
+)    
+
+st.divider()  # 👈 Draws a horizontal rule
+
+st.markdown(
+    """
+    #### Contributors:
+    - Raymond Loong Ng
+    - Darryl Lim
+    - Shaun Ho
+    """
+)

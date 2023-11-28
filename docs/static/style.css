@@ -85,24 +85,6 @@ div[data-testid="stForm"]{
     border:0
 }
 
-/* Table Styles */
-
-thead tr{
-    background-color: #C8A2CA;
-}
-.st-emotion-cache-ugqr0y{
-    color: white;
-}
-
-td{
-    color: #372549;
-}
-
-tr:nth-child(2){
-    background-color: whitesmoke
-}
-
-tbody tr:hover{
-    background-color: aliceblue;
-    color: white;
+.st-emotion-cache-pe32b6 *{
+    font-size: 18px;
 }
