@@ -73,25 +73,28 @@ with st.form("Upload Form",clear_on_submit=True):
             jd_dict = False
             resume_array = []
             #Loop through each file
-            for file in upload_files:
-                #Convert PDF to Text
-                text = dataprocessor.convertPDFToText(file)
-                
-                #Check for Job Description file
-                if file.name.lower() == 'job_description.pdf':
-                    jd_dict = dataprocessor.process_text(text, 'JD')
-                else:
-                    resume_dict = dataprocessor.process_text(text, 'Resume')
-                    resume_array.append(resume_dict)
-            
-            if jd_dict and resume_array:
-                for resume_dict in resume_array:
-                    techsk_score, softsk_score, lang_score = dataprocessor.get_score(jd_dict, resume_dict)
-                    insert_score(counter, resume_dict, techsk_score, softsk_score, lang_score)
-                    counter += 1
-                    st.toast(f"Resume for {resume_dict['Name']} :green[successfully uploaded]!", icon='🎉')
-            else:
+            if 'job_description.pdf' not in (file.name.lower() for file in upload_files):
                 st.toast(':red[Hey!] Please upload both job description and resume files!', icon='👺')
+            else:
+                for file in upload_files:
+                    #Convert PDF to Text
+                    text = dataprocessor.convertPDFToText(file)
+                    
+                    #Check for Job Description file
+                    if file.name.lower() == 'job_description.pdf':
+                        jd_dict = dataprocessor.process_text(text, 'JD')
+                    else:
+                        resume_dict = dataprocessor.process_text(text, 'Resume')
+                        resume_array.append(resume_dict)
+                
+                if jd_dict and resume_array:
+                    for resume_dict in resume_array:
+                        techsk_score, softsk_score, lang_score = dataprocessor.get_score(jd_dict, resume_dict)
+                        insert_score(counter, resume_dict, techsk_score, softsk_score, lang_score)
+                        counter += 1
+                        st.toast(f"Resume for {resume_dict['Name']} :green[successfully uploaded]!", icon='🎉')
+                else:
+                    st.toast(':red[Hey!] Please upload both job description and resume files!', icon='👺')
         else:
             st.toast(':red[Hey!] Please upload job description and resume files!', icon='👺')
 
