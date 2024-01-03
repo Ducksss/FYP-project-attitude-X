@@ -6,7 +6,7 @@ from pdfminer.high_level import extract_text
 ##Importing from utility 
 from utility.stopwords import filter_stopwords
 from utility.similarity_matching import get_similarity_score
-from utility.ner import jd_prompt_1, resume_prompt, convert_to_dict
+from utility.ner import jd_prompt_1, resume_prompt, convert_to_dict, chatbot
 
 class dataProcessor:
     
@@ -85,3 +85,6 @@ class dataProcessor:
         lang_score = round(lang_score*100,1)
         
         return techsk_score, softsk_score, lang_score
+    
+    def use_chatbot(self):
+        return chatbot()

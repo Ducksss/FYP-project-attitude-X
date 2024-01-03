@@ -14,7 +14,8 @@ show_pages(
         Page("pages/login.py", "Login", ":key:"),
         Page("pages/about.py","About",":book:"),
         Page("pages/home.py","Home",":house:"),
-        Page("pages/charts.py", "Charts", ":chart_with_upwards_trend:")]
+        Page("pages/charts.py", "Charts", ":chart_with_upwards_trend:"),
+        Page("pages/chatbot.py", "Chatbot", ":robot_face:")]
 )
 
 switch_page("Login")

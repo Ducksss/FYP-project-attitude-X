@@ -130,3 +130,6 @@ def convert_to_dict(text):
     print('-'*10 + 'Dictionary' + '-'*10)
     print(outputdictionary)
     return outputdictionary
+
+def chatbot():
+    return client
