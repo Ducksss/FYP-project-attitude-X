@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer, util
 
-model = SentenceTransformer('all-mpnet-base-v2')
+model = SentenceTransformer(model_name_or_path='trained_model')
 
 def get_similarity_score(jd_dict, resume_dict):
     for i in ['Technical Skills', 'Soft Skills', 'Languages']:

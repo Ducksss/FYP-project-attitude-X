@@ -63,6 +63,7 @@ class dataProcessor:
             #Getting Dictionary of details from Job Description
             jd_result = jd_prompt_1(text_filter)
             jd_dict = convert_to_dict(jd_result)
+            #print(jd_dict)
             return jd_dict
         elif filetype == 'Resume':
             #Getting Dictionary of details from resume
@@ -72,6 +73,7 @@ class dataProcessor:
             resume_dict = convert_to_dict(resume_result)
             resume_dict['contact_number'] = contact_number
             resume_dict['email'] = email
+            #print(resume_dict)
             return resume_dict
     
     #Calculating Scores
