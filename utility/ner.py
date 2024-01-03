@@ -1,40 +1,46 @@
 import openai
+from openai import OpenAI
 import json
 import os
 
-openai.api_base = 'https://api.deepinfra.com/v1/openai'
+# openai.api_base = 'https://api.deepinfra.com/v1/openai'
 
 if 'config.json' in os.listdir('./docs/'):
     with open('./docs/config.json') as config_file:
         config = json.load(config_file)
-        openai.api_key = config['api-key']
+        api_key = config['api-key']
 else:
-    openai.api_key = os.environ.get('API_KEY')
+    api_key = os.environ.get('API_KEY')
+
+client = OpenAI(
+    api_key=api_key   
+)
 
 # resume_temp = resume.replace('\n','')
 
 def send_prompt(system_prompt, prompt):
-    MODEL_DI = "meta-llama/Llama-2-70b-chat-hf"
+    MODEL_DI = "gpt-3.5-turbo-instruct"
+    response = client.completions.create(
+        model=MODEL_DI, # Optional (user controls the default)
+        # messages=[
+        #     {"role": "system", "content": system_prompt},
+        #     {"role": "user", "content": prompt},
+        #     # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."}
+        # ],
+        prompt = f'''
+{system_prompt}
 
-    response = openai.ChatCompletion.create(
-    model=MODEL_DI, # Optional (user controls the default)
-    messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": prompt},
-        # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."}
-    ],
-    headers={
-        "HTTP-Referer": "http://localhost:3000", # To identify your app. Can be set to e.g. http://localhost:3000 for testing
-        # "X-Title": $YOUR_APP_NAME, # Optional. Shows on openrouter.ai
-    },
-    temperature = 0, #Randomness
-    max_tokens = 1000, #Maximum words
-    top_p = 0.9 
+{prompt}''',
+        seed = 7,
+        temperature = 0, #Randomness
+        max_tokens = 1000, #Maximum words
+        top_p = 0.1,
     )
 
-    reply = response.choices[0].message
+    reply = response.choices[0]
+    print(reply.text)
 
-    return reply['content']
+    return reply.text
 
 def jd_prompt_1(jd_text):
     prompt = f'''
@@ -73,13 +79,12 @@ def resume_prompt(resume_text):
    
 #Function to convert LLM Output to dictionary
 def convert_to_dict(text):
-    test = text.replace('\n*',',')
-    test = test.replace("\n,",'')
+    test = text.replace('\n-',',')
+    test = test.replace(": ,",':')
     test = test.replace("\n\n",'\n')
-
     # Get result from Name onwards
-    if 'Job Name' in test:
-        test = test[test.find('Job Name'):]
+    if 'Job name' in test:
+        test = test[test.find('Job name'):]
     else:
         test = test[test.find('Name'):]
 
@@ -89,9 +94,11 @@ def convert_to_dict(text):
 
     # Remove whitespace
     test = test.strip()
-
     # Split by lines
     test = test.split('\n')
+
+    print('-'*10 + 'Before Dictionary'+ '-'*10)
+    print(test)
 
     #Initialize dictionary
     outputdictionary = {}
@@ -119,5 +126,7 @@ def convert_to_dict(text):
                 outputdictionary[templist[0]] = templist[1]
             else:
                 outputdictionary[templist[0]] = templist[1].strip()
-            
+
+    print('-'*10 + 'Dictionary' + '-'*10)
+    print(outputdictionary)
     return outputdictionary

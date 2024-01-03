@@ -57,6 +57,8 @@ class dataProcessor:
     # Calling NER & Stopwords
     def process_text(self,text,filetype):
         text_filter = filter_stopwords(text)
+        print("-"*10 + "Filtered Text"+"-"*10)
+        print(text_filter)
         if filetype == 'JD':
             #Getting Dictionary of details from Job Description
             jd_result = jd_prompt_1(text_filter)
