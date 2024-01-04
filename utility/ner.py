@@ -18,7 +18,7 @@ client = OpenAI(
 
 # resume_temp = resume.replace('\n','')
 
-def send_prompt(system_prompt, prompt):
+def send_prompt_instruct(system_prompt, prompt):
     MODEL_DI = "gpt-3.5-turbo-instruct"
     response = client.completions.create(
         model=MODEL_DI, # Optional (user controls the default)
@@ -33,6 +33,26 @@ def send_prompt(system_prompt, prompt):
 {prompt}''',
         seed = 7,
         temperature = 0, #Randomness
+        max_tokens = 1000, #Maximum words
+        top_p = 0.1,
+    )
+
+    reply = response.choices[0]
+    print(reply.text)
+
+    return reply.text
+
+def send_prompt_chat(system_prompt, prompt):
+    MODEL_DI = "gpt-3.5-turbo-1106"
+    response = client.completions.create(
+        model=MODEL_DI, # Optional (user controls the default)
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+            # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."}
+        ],
+        seed = 7,
+        temperature = 0.5, #Randomness
         max_tokens = 1000, #Maximum words
         top_p = 0.1,
     )
@@ -57,7 +77,7 @@ def jd_prompt_1(jd_text):
     Do not include any languages in the soft skills section. Remove brackets in the language section.
     '''
     
-    reply = send_prompt(system_prompt, prompt)
+    reply = send_prompt_instruct(system_prompt, prompt)
     return reply
 
 def resume_prompt(resume_text):
@@ -73,7 +93,7 @@ def resume_prompt(resume_text):
     Languages: ...
     '''
     
-    reply = send_prompt(system_prompt, prompt)
+    reply = send_prompt_instruct(system_prompt, prompt)
     return reply
     
    
