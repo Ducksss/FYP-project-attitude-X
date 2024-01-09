@@ -8,6 +8,8 @@ import base64
 from pathlib import Path
 from PIL import Image
 from streamlit_modal import Modal
+import st_pop_up_component as sp
+from audio_recorder_streamlit import audio_recorder
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -63,6 +65,21 @@ def choice_change():
         st.session_state.history.append('Yes')
         st.session_state.history.append(ariel_script[3])
         
+        # modal = Modal(key="Audio popup",title="Begin Recording")
+        # for col in st.columns(8):
+        #     with col:
+        #         open_modal = st.button(label='button')
+        #         if open_modal:
+        #             with modal.container():
+        #                 audio_bytes = audio_recorder()
+        #                 if audio_bytes:
+        #                     st.audio(audio_bytes, format="audio/wav")
+        audio_bytes = audio_recorder()
+        output =sp.st_custom_pop_up(audio_bytes,key="Audio popup")
+        st.write(output)
+        if audio_bytes:
+            st.audio(audio_bytes, format="audio/wav")
+            
 
     elif choice == 'No :heavy_multiplication_x:':
         st.session_state.history.append('No')
