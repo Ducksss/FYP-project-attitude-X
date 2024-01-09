@@ -29,6 +29,15 @@ logout = st.sidebar.button("Logout")
 if logout:
     switch_page('Login')
 
+#chatbot script
+ariel_script = [
+    "Hi Jeff! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
+    "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
+    "Please respond with 'yes' if you acknowledge",
+    "Great! Let's move on. I'm about to present your initial question. Click the pop-up recording button to start recording when you're prepared. Once finished, click the button again to submit. Keep in mind, there won't be any retakes, mirroring the authenticity of a real-life interview. Best of luck!",
+    "Sorry, I didn't quite catch that, could you respond exactly with a 'yes'?"    
+]
+
 def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
     encoded = base64.b64encode(img_bytes).decode()
@@ -46,7 +55,7 @@ def on_click_callback():
 
 def initialize_session_state():
     if "history" not in st.session_state:
-        st.session_state.history = []
+        st.session_state.history = [ariel_script[0],ariel_script[1],ariel_script[2]]
 
 initialize_session_state()
 
@@ -89,5 +98,5 @@ with chat_placeholder:
 
     if choice == 'Yes :heavy_check_mark:' :
         st.session_state.history.append('Yes')
-    else:
+    elif choice == 'No :heavy_multiplication_x:':
         st.session_state.history.append('No')
