@@ -1,9 +1,12 @@
 ##Importing Libraries
 import os
 import sys
-import graphviz
 import streamlit as st
 from st_pages import hide_pages
+import streamlit as st
+import base64
+from pathlib import Path
+from PIL import Image
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -26,35 +29,65 @@ logout = st.sidebar.button("Logout")
 if logout:
     switch_page('Login')
 
+def img_to_bytes(img_path):
+    img_bytes = Path(img_path).read_bytes()
+    encoded = base64.b64encode(img_bytes).decode()
+    return encoded
 
-st.title("ChatGPT-like clone")
+def img_to_html(img_path):
+    img_html = "<img src='data:image/png;base64,{}' class='img-fluid', width=32, height=32>".format(
+      img_to_bytes(img_path)
+    )
+    return img_html
 
-client = dataprocessor.use_chatbot()
+def on_click_callback():
+    human_prompt=st.session_state.human_prompt
+    st.session_state.history.append(human_prompt)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+def initialize_session_state():
+    if "history" not in st.session_state:
+        st.session_state.history = []
 
-for message in st.session_state.messages[:]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+initialize_session_state()
 
-if prompt := st.chat_input("What is up?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+st.title('chatbot')
 
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
-        for response in client.chat.completions.create(
-            model='gpt-3.5-turbo-1106',
-            messages = [
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        ):
-            full_response += (response.choices[0].delta.content or "")
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+chat_placeholder = st.container()
+prompt_placeholder = st.form("chat-form")
+credit_card_placeholder = st.empty()
+
+with prompt_placeholder:
+    st.markdown('**Chat** - _press enter to submit_')
+    cols = st.columns((6,1))
+    # cols[0].text_input(
+    #     "Chat",
+    #     value="Hello bot",
+    #     label_visibility="collapsed",
+    #     key="human_prompt"
+    # )
+    choice = cols[0].radio(
+       "Please select 'yes' if you acknowledge",
+       ["Yes :heavy_check_mark:", "No :heavy_multiplication_x:"],
+       horizontal=True,
+       key = "human_prompt"
+    )
+    cols[1].form_submit_button(
+        "Submit",
+        on_click=on_click_callback
+    )
+
+with chat_placeholder:
+    for chat in st.session_state.history:
+        image = img_to_html('docs/static/hr_icon.jpeg')
+        div = f"""
+        <div class="chat-row">
+            {image}
+            <div class="ai-bubble">&#8203;{chat}</div>
+        </div>
+        """
+        st.markdown(div, unsafe_allow_html=True)
+
+    if choice == 'Yes :heavy_check_mark:' :
+        st.session_state.history.append('Yes')
+    else:
+        st.session_state.history.append('No')

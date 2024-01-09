@@ -88,3 +88,28 @@ div[data-testid="stForm"]{
 .st-emotion-cache-pe32b6 *{
     font-size: 18px;
 }
+
+.chat-row{
+    display: flex;
+    margin: 5px;
+    width: 100%;
+}
+
+.row-reverse{
+    flex-direction: row-reverse;
+}
+
+.chat-bubble {
+    font-family: "Source Sans Pro";
+    border: 1px solid transparent;
+    padding: 5px 10px;
+    margin: 0px 50px;
+    max-width: 70%;
+}
+
+.ai-bubble {
+    background-color: rgb(240,242,246);
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
