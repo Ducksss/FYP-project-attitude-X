@@ -49,17 +49,23 @@ def img_to_html(img_path):
     )
     return img_html
 
-def on_click_callback():
-    human_prompt=st.session_state.human_prompt
-    st.session_state.history.append(human_prompt)
+# def on_click_callback():
+#     human_prompt=st.session_state.human_prompt
+#     st.session_state.history.append(human_prompt)
 
 def initialize_session_state():
     if "history" not in st.session_state:
         st.session_state.history = [ariel_script[0],ariel_script[1],ariel_script[2]]
 
-initialize_session_state()
+def choice_change():
+    if choice == 'Yes :heavy_check_mark:' :
+        st.session_state.history.append('Yes')
+    elif choice == 'No :heavy_multiplication_x:':
+        st.session_state.history.append('No')
 
 st.title('chatbot')
+
+initialize_session_state()
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
@@ -68,35 +74,35 @@ credit_card_placeholder = st.empty()
 with prompt_placeholder:
     st.markdown('**Chat** - _press enter to submit_')
     cols = st.columns((6,1))
-    # cols[0].text_input(
-    #     "Chat",
-    #     value="Hello bot",
-    #     label_visibility="collapsed",
-    #     key="human_prompt"
-    # )
-    choice = cols[0].radio(
-       "Please select 'yes' if you acknowledge",
+
+    with cols[0]:
+        choice = st.radio(
+       "Please select 'yes' and 'no' accordingly",
        ["Yes :heavy_check_mark:", "No :heavy_multiplication_x:"],
        horizontal=True,
        key = "human_prompt"
     )
-    cols[1].form_submit_button(
-        "Submit",
-        on_click=on_click_callback
-    )
+    with cols[1]:
+        submit_button = st.form_submit_button()
+        if submit_button:
+            choice_change()
 
 with chat_placeholder:
-    for chat in st.session_state.history:
-        image = img_to_html('docs/static/hr_icon.jpeg')
+    for chat in st.session_state.history[:3]:
+            image = img_to_html('docs/static/hr_icon.jpeg')
+            div = f"""
+            <div class="chat-row">
+                {image}
+                <div class="ai-bubble">&#8203;{chat}</div>
+            </div>
+            """
+            st.markdown(div, unsafe_allow_html=True)
+    for chat in st.session_state.history[3:]:
+        image = img_to_html('docs/static/user_icon.jpeg')
         div = f"""
-        <div class="chat-row">
+        <div class="chat-row row-reverse">
             {image}
-            <div class="ai-bubble">&#8203;{chat}</div>
+            <div class="human-bubble">&#8203;{chat}</div>
         </div>
         """
         st.markdown(div, unsafe_allow_html=True)
-
-    if choice == 'Yes :heavy_check_mark:' :
-        st.session_state.history.append('Yes')
-    elif choice == 'No :heavy_multiplication_x:':
-        st.session_state.history.append('No')

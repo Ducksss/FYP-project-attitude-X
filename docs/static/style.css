@@ -113,3 +113,10 @@ div[data-testid="stForm"]{
     padding: 5px 10px;
     margin-left: 10px;
 }
+
+.human-bubble {
+    background: linear-gradient(135deg, rgb(0, 178, 255) 0%, rgb(0, 106, 255) 100%); 
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
