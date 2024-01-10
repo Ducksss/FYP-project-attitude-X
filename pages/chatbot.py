@@ -7,9 +7,8 @@ import streamlit as st
 import base64
 from pathlib import Path
 from PIL import Image
-from streamlit_modal import Modal
-import st_pop_up_component as sp
 from audio_recorder_streamlit import audio_recorder
+from st_audiorec import st_audiorec
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -65,20 +64,25 @@ def choice_change():
         st.session_state.history.append('Yes')
         st.session_state.history.append(ariel_script[3])
         
-        # modal = Modal(key="Audio popup",title="Begin Recording")
-        # for col in st.columns(8):
-        #     with col:
-        #         open_modal = st.button(label='button')
-        #         if open_modal:
-        #             with modal.container():
-        #                 audio_bytes = audio_recorder()
-        #                 if audio_bytes:
-        #                     st.audio(audio_bytes, format="audio/wav")
-        audio_bytes = audio_recorder()
-        output =sp.st_custom_pop_up(audio_bytes,key="Audio popup")
-        st.write(output)
-        if audio_bytes:
-            st.audio(audio_bytes, format="audio/wav")
+        # with record_placeholder:
+        #     audio_bytes = audio_recorder()
+        #     if audio_bytes:
+        #         record = st.audio(audio_bytes, format="audio/wav")
+        #         record.export("/docs/record.wav",format = "wav")
+                # with open('./', mode='bw') as f:
+                #     f.write(audio_bytes)
+                #     f.close()
+        with record_placeholder:
+             
+            wav_audio_data = st_audiorec()
+
+            if wav_audio_data is not None:
+                st.audio(wav_audio_data, format='audio/wav')
+
+        prompt_placeholder.empty()
+
+        # output = sp.st_custom_pop_up('hi',key="Audio popup")
+        # st.write(output)
             
 
     elif choice == 'No :heavy_multiplication_x:':
@@ -90,11 +94,11 @@ st.title('chatbot')
 initialize_session_state()
 
 chat_placeholder = st.container()
-prompt_placeholder = st.form("chat-form")
-credit_card_placeholder = st.empty()
+# prompt_placeholder = st.form("chat-form")
+prompt_placeholder = st.empty()
+record_placeholder = st.empty()
 
-with prompt_placeholder:
-    st.markdown('**Chat** - _press enter to submit_')
+with prompt_placeholder.form("chat-form"):
     cols = st.columns((6,1))
 
     with cols[0]:
