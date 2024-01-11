@@ -20,7 +20,7 @@ dataprocessor = dataProcessor()
 dataprocessor.local_css()
 
 #Hide Pages before Login
-hide_pages(["About", "Home", "Charts"])
+hide_pages(["About", "Home", "Charts", "Chatbot", "Video"])
 
 # Create an empty container
 placeholder = st.empty()

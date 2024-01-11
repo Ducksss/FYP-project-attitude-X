@@ -11,6 +11,7 @@ mongo_url = "mongodb://localhost:27017"
 myclient = pymongo.MongoClient(mongo_url)
 mydb = myclient["resumeDB"]
 mycol = mydb["scores"]
+interview_col = mydb['interview']
 
 def calculate_score(w1,w2,w3):
     return lambda x : round(w1* x['technical_skills'] + w2*x['soft_skills'] + w3*x['languages'],1)
@@ -33,6 +34,23 @@ def insert_score(counter,resume_dict, techsk_score, softsk_score, lang_score):
 
     x = mycol.insert_one(mydict)
     return
+
+def insert_interview(counter,name,transcript,summary,url_list):
+    mydict =  {
+        "_id": counter,
+        "name": name,
+        "transcript": transcript,
+        "summary": summary, 
+        "url_list" : url_list 
+        }
+
+    x = interview_col.insert_one(mydict)
+    return
+
+def get_interview():
+    table = pd.DataFrame(interview_col.find())
+
+    return table
 
 def get_ovr_score_desc(w1,w2,w3):
     table = pd.DataFrame(mycol.find())

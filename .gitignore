@@ -1,2 +1,4 @@
 __pycache__/
 docs/config.json
+ffmpeg.exe
+trained_model.zip
