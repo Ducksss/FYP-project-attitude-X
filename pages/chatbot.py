@@ -9,6 +9,13 @@ from pathlib import Path
 from PIL import Image
 from audio_recorder_streamlit import audio_recorder
 from st_audiorec import st_audiorec
+from streamlit_webrtc import WebRtcMode, webrtc_streamer
+from utility.turn_server import get_ice_servers
+from aiortc.contrib.media import MediaRecorder
+import av
+import cv2
+import uuid
+from twilio.rest import Client
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -72,18 +79,74 @@ def choice_change():
                 # with open('./', mode='bw') as f:
                 #     f.write(audio_bytes)
                 #     f.close()
-        with record_placeholder:
+        
+        # with record_placeholder:
              
-            wav_audio_data = st_audiorec()
+        #     wav_audio_data = st_audiorec()
 
-            if wav_audio_data is not None:
-                st.audio(wav_audio_data, format='audio/wav')
+        #     if wav_audio_data is not None:
+        #         st.audio(wav_audio_data, format='audio/wav')
 
-        prompt_placeholder.empty()
+        account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
+        auth_token = "626e9bf064c5bdc07f618a01f384e7f2"
+        client = Client(account_sid, auth_token)
 
-        # output = sp.st_custom_pop_up('hi',key="Audio popup")
-        # st.write(output)
-            
+        token = client.tokens.create()
+
+        RECORD_DIR = Path("./records")
+        RECORD_DIR.mkdir(exist_ok=True)
+
+        if "prefix" not in st.session_state:
+            st.session_state["prefix"] = str(uuid.uuid4())
+        prefix = st.session_state["prefix"]
+        in_file = RECORD_DIR / f"{prefix}_input.flv"
+        out_file = RECORD_DIR / f"{prefix}_output.flv"
+
+        def in_recorder_factory() -> MediaRecorder:
+            return MediaRecorder(
+                str(in_file), format="flv"
+            )  # HLS does not work. See https://github.com/aiortc/aiortc/issues/331
+
+        def out_recorder_factory() -> MediaRecorder:
+                return MediaRecorder(str(out_file), format="flv")
+        
+        def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+            img = frame.to_ndarray(format="bgr24")
+
+            # perform edge detection
+            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
+
+            return av.VideoFrame.from_ndarray(img, format="bgr24")
+
+        with record_placeholder:
+            webrtc_streamer(
+            key="record",
+            mode=WebRtcMode.SENDRECV,
+            # rtc_configuration={"iceServers": get_ice_servers()},
+            # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+            rtc_configuration={"iceServers":token.ice_servers},
+            media_stream_constraints={
+                "video": True,
+                "audio": True,
+            },
+            video_frame_callback=video_frame_callback,
+            in_recorder_factory=in_recorder_factory,
+            out_recorder_factory=out_recorder_factory,
+            )
+            # webrtc_streamer(key='example')
+
+            if in_file.exists():
+                with in_file.open("rb") as f:
+                    st.download_button(
+                        "Download the recorded video without video filter", f, "input.flv"
+                    )
+            if out_file.exists():
+                with out_file.open("rb") as f:
+                    st.download_button(
+                        "Download the recorded video with video filter", f, "output.flv"
+                    )
+
+        prompt_placeholder.empty()  
 
     elif choice == 'No :heavy_multiplication_x:':
         st.session_state.history.append('No')
@@ -97,6 +160,7 @@ chat_placeholder = st.container()
 # prompt_placeholder = st.form("chat-form")
 prompt_placeholder = st.empty()
 record_placeholder = st.empty()
+# record_placeholder = st.container()
 
 with prompt_placeholder.form("chat-form"):
     cols = st.columns((6,1))
@@ -150,3 +214,65 @@ with chat_placeholder:
             </div>
             """
             st.markdown(div, unsafe_allow_html=True)
+
+# with record_placeholder:
+#     webrtc_streamer(key='example')
+record_placeholder = st.container()
+account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
+auth_token = "626e9bf064c5bdc07f618a01f384e7f2"
+client = Client(account_sid, auth_token)
+
+token = client.tokens.create()
+
+RECORD_DIR = Path("./records")
+RECORD_DIR.mkdir(exist_ok=True)
+
+if "prefix" not in st.session_state:
+    st.session_state["prefix"] = str(uuid.uuid4())
+prefix = st.session_state["prefix"]
+in_file = RECORD_DIR / f"{prefix}_input.flv"
+out_file = RECORD_DIR / f"{prefix}_output.flv"
+
+def in_recorder_factory() -> MediaRecorder:
+            return MediaRecorder(
+                str(in_file), format="flv"
+            )  # HLS does not work. See https://github.com/aiortc/aiortc/issues/331
+
+def out_recorder_factory() -> MediaRecorder:
+                return MediaRecorder(str(out_file), format="flv")
+        
+def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+            img = frame.to_ndarray(format="bgr24")
+
+            # perform edge detection
+            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
+
+            return av.VideoFrame.from_ndarray(img, format="bgr24")
+
+with record_placeholder:
+            webrtc_streamer(
+            key="record",
+            mode=WebRtcMode.SENDRECV,
+            # rtc_configuration={"iceServers": get_ice_servers()},
+            # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+            rtc_configuration={"iceServers":token.ice_servers},
+            media_stream_constraints={
+                "video": True,
+                "audio": True,
+            },
+            video_frame_callback=video_frame_callback,
+            in_recorder_factory=in_recorder_factory,
+            out_recorder_factory=out_recorder_factory,
+            )
+            # webrtc_streamer(key='example')
+
+if in_file.exists():
+                with in_file.open("rb") as f:
+                    st.download_button(
+                        "Download the recorded video without video filter", f, "input.flv"
+                    )
+if out_file.exists():
+                with out_file.open("rb") as f:
+                    st.download_button(
+                        "Download the recorded video with video filter", f, "output.flv"
+                    )
