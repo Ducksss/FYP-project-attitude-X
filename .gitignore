@@ -1,4 +1,5 @@
 __pycache__/
 docs/config.json
+docs/server_auth.json
 ffmpeg.exe
 trained_model/

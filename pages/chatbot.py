@@ -15,7 +15,7 @@ import regex as re
 from twilio.rest import Client
 import datetime
 import time
-import threading 
+import json
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -161,8 +161,12 @@ record_placeholder = st.container()
 if 'recorder' in st.session_state:
     if st.session_state.recorder == 1 :
         prompt_placeholder.empty()
-        account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
-        auth_token = "04b7ce3b5ce46a854573c9607a743152"
+        if 'server_auth.json' in os.listdir('./docs/'):
+            with open('./docs/server_auth.json') as server_file:
+                server = json.load(server_file)
+                account_sid = server['account_sid']
+                auth_token = server['auth_token']
+
         client = Client(account_sid, auth_token)
 
         token = client.tokens.create()
