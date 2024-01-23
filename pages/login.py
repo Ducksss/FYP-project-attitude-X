@@ -34,7 +34,6 @@ with placeholder.form("login"):
     image = Image.open('docs/static/draw.png')
     col1, col2, col3 = st.columns([2, 4, 2])
     col2.image(image, use_column_width='auto')
-
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
     col4, col5, col6 = st.columns(3)
@@ -45,6 +44,7 @@ if submit:
     if email == actual_email and password == actual_password:
         # If the form is submitted and the email and password are correct,
         # clear the form/container and display a success message
+        st.session_state.email = email
         placeholder.empty()
         st.success("Login successful")
         time.sleep(0.5)
