@@ -6,11 +6,11 @@ from st_pages import hide_pages
 import pandas as pd
 import tempfile
 import streamlit_scrollable_textbox as stx
+from extra_streamlit_components import CookieManager
 import math
 
 # Importing functions
 from streamlit_extras.switch_page_button import switch_page
-from extra_streamlit_components import CookieManager
 from utility.classes import dataProcessor
 from utility.speech_tagger import transcribeFile
 from utility.ner import transcription_prompt
@@ -42,13 +42,15 @@ if logout:
     switch_page('Login')
 
 df = get_interview()
-# df = df.reset_index()
 if len(df.index) == 0:
     id_counter = 1
 else:
     id_counter = max(df["_id"]) + 1
 
 #Start of Page
+    
+# Change font size of questions
+st.markdown('<style>label p{font-size:18px !important; font-weight:bold; color: rgb(150, 150, 150)}</style>',unsafe_allow_html=True)
     
 with st.form("Upload Form",clear_on_submit=True):
     upload_files = st.file_uploader('Upload Video/Audio',type=['mp4'],label_visibility='hidden',accept_multiple_files=True)
@@ -73,8 +75,9 @@ with st.form("Upload Form",clear_on_submit=True):
                 summary_dict[f'Question {counter}'] = summary
                 url_dict[f'Question {counter}'] = file_url
                 counter += 1
-            insert_interview(id_counter,'test4',transcript_dict,summary_dict,url_dict)
+            insert_interview(id_counter,'test',transcript_dict,summary_dict,url_dict)
             
+st.divider()
 # if 'transcript' in st.session_state:
 #     tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
 #     with tab1:
@@ -106,33 +109,32 @@ with st.form("Upload Form",clear_on_submit=True):
 #                 st.text(reply)
 
 if st.selectbox("Which applicant's interview would you like to view?",list(df['name']),key='applicant',index=None,placeholder="Select applicant..."):
-    tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
-    if 'applicant' in st.session_state:
-        applicant_df = df[df['name']== st.session_state.applicant]
-        print(applicant_df['url_list'].values[0])
-        with tab1:
-            if st.text_input('Timestamp Input (seconds)',key='timestamp'):
-                for question, url in applicant_df['url_list'].values[0].items():
-                    with st.expander(f"{question}"):
-                        if st.session_state.timestamp.isnumeric():
-                            timestamp = int(st.session_state.timestamp)
-                            st.markdown(f'<iframe src="{url.split("?")[0]}?t={timestamp}s" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
+    st.divider()
+    if st.selectbox("Which question would you like to view?",list(df['transcript'].values[0].keys()),key='question',index=None,placeholder="Select question..."):
+        st.divider()
+        tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
+        if 'applicant' in st.session_state:
+            applicant_df = df[df['name']== st.session_state.applicant]
+            question = st.session_state.question
+            with tab1:
+                url = applicant_df['url_list'].values[0][question]
+                if st.text_input('Timestamp Input (seconds)',key='timestamp'):
+                    if st.session_state.timestamp.isnumeric():
+                        timestamp = int(st.session_state.timestamp)
+                        st.markdown(f'<iframe src="{url.split("?")[0]}?t={timestamp}s" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-                        else:
-                            st.toast(':red[Hey!] Ensure timestamp is numeric!', icon='👺')
-                            st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
-            else:
-                for question, url in applicant_df['url_list'].values[0].items():
-                    with st.expander(f"{question}"):
+                    else:
+                        st.toast(':red[Hey!] Ensure timestamp is numeric!', icon='👺')
                         st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-        with tab2:
-            for question, transcript in applicant_df['transcript'].values[0].items():
-                with st.expander(f"{question}"):
-                    stx.scrollableTextbox(transcript,fontFamily="Source Sans Pro, sans-serif",height=150)
-                    st.download_button('Download Transcript', transcript,file_name='transcript.txt',key=question)
+                else:
+                    st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-        with tab3:
-            for question,summary in applicant_df['summary'].values[0].items():
-                with st.expander(f"{question}"):
-                        st.text(summary)
+            with tab2:
+                transcript = applicant_df['transcript'].values[0][question]
+                stx.scrollableTextbox(transcript,fontFamily="Source Sans Pro, sans-serif",height=150)
+                st.download_button('Download Transcript', transcript,file_name='transcript.txt',key=question)
+
+            with tab3:
+                summary = applicant_df['summary'].values[0][question]
+                st.text(summary)

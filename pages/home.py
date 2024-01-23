@@ -43,6 +43,8 @@ if len(get_ovr_score_desc(0.4,0.4,0.2)) > 0:
 else:
     df = get_ovr_score_desc(0.4,0.4,0.2)
 
+st.session_state.dbcode = 3
+
 # df = df.reset_index()
 if len(df.index) == 0:
     counter = 1

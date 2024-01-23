@@ -66,6 +66,17 @@ input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],bu
     background-color: whitesmoke;
 }
 
+input[aria-label='Timestamp Input (seconds)']{
+    background-color: white;
+}
+
+textarea[aria-label='What is the new value?'],
+textarea[aria-label='What are the questions to be asked for this Personality Type? (separate questions using "Enter")'],
+input[aria-label='What is the name of the Personality Type?'],
+input[aria-label='What is the new value?']{
+    background-color: whitesmoke;
+}
+
 .e1f1d6gn4{
     padding-top: 10px;
 }
