@@ -9,6 +9,7 @@ import pandas as pd
 # Importing functions
 from database import get_ovr_score_desc, insert_score, callback
 from streamlit_extras.switch_page_button import switch_page
+from extra_streamlit_components import CookieManager
 from utility.classes import dataProcessor
 
 # Set up path to utility folder
@@ -20,12 +21,19 @@ dataprocessor = dataProcessor()
 
 dataprocessor.local_css()
 
-#Hide pages after login
-hide_pages(["Login"])
+cookie_manager = CookieManager()
+email = cookie_manager.get(cookie='email')
+
+#Hide Pages after login
+if email == 'admin':
+    hide_pages(["Login","Chatbot"])
+elif email == 'email' or 'yes':
+     hide_pages(["Login","Charts","Video","Home"])
 
 #Logout Button
 logout = st.sidebar.button("Logout")
 if logout:
+    cookie_manager.delete('email')
     switch_page('Login')
 
 ##Start of Page

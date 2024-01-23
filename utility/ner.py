@@ -44,7 +44,7 @@ def send_prompt_instruct(system_prompt, prompt):
 
 def send_prompt_chat(system_prompt, prompt):
     MODEL_DI = "gpt-3.5-turbo-1106"
-    response = client.completions.create(
+    response = client.chat.completions.create(
         model=MODEL_DI, # Optional (user controls the default)
         messages=[
             {"role": "system", "content": system_prompt},
@@ -52,15 +52,14 @@ def send_prompt_chat(system_prompt, prompt):
             # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."}
         ],
         seed = 7,
-        temperature = 0.5, #Randomness
+        temperature = 0.1, #Randomness
         max_tokens = 1000, #Maximum words
         top_p = 0.1,
     )
 
-    reply = response.choices[0]
-    print(reply.text)
-
-    return reply.text
+    reply = response.choices[0].message
+    print(reply.content)
+    return reply.content
 
 def jd_prompt_1(jd_text):
     prompt = f'''
@@ -77,7 +76,7 @@ def jd_prompt_1(jd_text):
     Do not include any languages in the soft skills section. Remove brackets in the language section.
     '''
     
-    reply = send_prompt_instruct(system_prompt, prompt)
+    reply = send_prompt_chat(system_prompt, prompt)
     return reply
 
 def resume_prompt(resume_text):
@@ -96,6 +95,27 @@ def resume_prompt(resume_text):
     reply = send_prompt_instruct(system_prompt, prompt)
     return reply
     
+def transcription_prompt(transcription):
+    prompt = f'''
+Transcript:
+{transcription}'''
+    
+#     system_prompt = f'''
+# Summarize the following job interview, label key points and topics of the transcript where the applicant shows keys skills (soft and technical skills) in around 15 words more or less with the timestamps in brackets.'''
+    system_prompt = f'''Summarize the following job interview, label all key points and topics of the transcript with the timestamps in brackets.
+
+Key Points:
+- ...
+- ...
+- ...
+
+Topics:
+- ...
+- ...
+- ...'''
+    reply = send_prompt_instruct(system_prompt, prompt)
+    return reply
+
    
 #Function to convert LLM Output to dictionary
 def convert_to_dict(text):

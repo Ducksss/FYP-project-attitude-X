@@ -20,13 +20,17 @@ dataprocessor = dataProcessor()
 dataprocessor.local_css()
 
 #Hide Pages before Login
-hide_pages(["About", "Home", "Charts"])
+hide_pages(["About", "Home", "Charts", "Chatbot", "Video"])
 
 # Create an empty container
 placeholder = st.empty()
 
-actual_email = "email"
-actual_password = "password"
+admin_email = "admin"
+admin_password = "admin"
+user1_email = "email"
+user1_password = "password"
+user2_email = "yes"
+user2_password = "hi"
 
 # Insert a form in the container
 with placeholder.form("login"):
@@ -42,14 +46,15 @@ with placeholder.form("login"):
         submit = st.form_submit_button("Login",use_container_width=True)
 
 if submit:
-    if email == actual_email and password == actual_password:
+    if email == admin_email and password == admin_password or email == user1_email and password == user1_password or email == user2_email and password == user2_password:
         # If the form is submitted and the email and password are correct,
         # clear the form/container and display a success message
+        st.session_state.email = email
         placeholder.empty()
         st.success("Login successful")
         time.sleep(0.5)
         switch_page('About')
-    elif email != actual_email or password != actual_password:        
+    elif email != admin_email or password != admin_password or email != user1_email or password != user1_password or email != user2_email or password != user2_password:        
         st.toast(":red Login failed",icon='🚨')
     else:
         pass

@@ -7,15 +7,15 @@ import streamlit as st
 import base64
 from pathlib import Path
 from PIL import Image
-from audio_recorder_streamlit import audio_recorder
-from st_audiorec import st_audiorec
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
-from utility.turn_server import get_ice_servers
 from aiortc.contrib.media import MediaRecorder
+from extra_streamlit_components import CookieManager
 import av
-import cv2
-import uuid
+import regex as re
 from twilio.rest import Client
+import datetime
+import time
+import threading 
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -30,22 +30,36 @@ dataprocessor = dataProcessor()
 
 dataprocessor.local_css()
 
+cookie_manager = CookieManager()
+email = cookie_manager.get(cookie='email')
+
 #Hide Pages after login
-hide_pages(["Login"])
+if email == 'admin':
+    hide_pages(["Login","Chatbot"])
+elif email == 'email' or 'yes':
+     hide_pages(["Login","Charts","Video","Home"])
 
 #Logout Button
 logout = st.sidebar.button("Logout")
 if logout:
+    cookie_manager.delete('email')
     switch_page('Login')
 
 #chatbot script
 ariel_script = [
-    "Hi XX! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
+    "Hello! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
     "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
     "Please respond with 'yes' if you acknowledge",
     "Great! Let's move on. I'm about to present your initial question. Click the pop-up recording button to start recording when you're prepared. Once finished, click the button again to submit. Keep in mind, there won't be any retakes, mirroring the authenticity of a real-life interview. Best of luck!",
-    "Sure, please click 'yes' when you are ready to move on."    
-]
+    "Sure, please click 'yes' when you are ready to move on.",    
+    "When was the last time you “broke the rules”?", #Personality A <Honesty & Integrity>
+    "Describe a situation where you saw an employee or co-worker do something you thought was inappropriate.", #Personality A
+    "Describe an instance when your curious nature significantly impacted a project outcome.", #Personality B <Curiosity>
+    "Relate a time when being too curious led to an unexpected challenge or setback.", #Personality B
+    "third question for personality a",
+    "thrid question for personality b",
+    "This is the end of the interview thank you for your time."
+] 
 
 def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
@@ -70,89 +84,25 @@ def choice_change():
     if choice == 'Yes :heavy_check_mark:' :
         st.session_state.history.append('Yes')
         st.session_state.history.append(ariel_script[3])
-        
-        # with record_placeholder:
-        #     audio_bytes = audio_recorder()
-        #     if audio_bytes:
-        #         record = st.audio(audio_bytes, format="audio/wav")
-        #         record.export("/docs/record.wav",format = "wav")
-                # with open('./', mode='bw') as f:
-                #     f.write(audio_bytes)
-                #     f.close()
-        
-        # with record_placeholder:
-             
-        #     wav_audio_data = st_audiorec()
 
-        #     if wav_audio_data is not None:
-        #         st.audio(wav_audio_data, format='audio/wav')
+        if email == 'email':
+             st.session_state.history.append(ariel_script[5])
+        elif email == 'yes':
+             st.session_state.history.append(ariel_script[7])
 
-        account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
-        auth_token = "626e9bf064c5bdc07f618a01f384e7f2"
-        client = Client(account_sid, auth_token)
-
-        token = client.tokens.create()
-
-        RECORD_DIR = Path("./records")
-        RECORD_DIR.mkdir(exist_ok=True)
-
-        if "prefix" not in st.session_state:
-            st.session_state["prefix"] = str(uuid.uuid4())
-        prefix = st.session_state["prefix"]
-        in_file = RECORD_DIR / f"{prefix}_input.flv"
-        out_file = RECORD_DIR / f"{prefix}_output.flv"
-
-        def in_recorder_factory() -> MediaRecorder:
-            return MediaRecorder(
-                str(in_file), format="flv"
-            )  # HLS does not work. See https://github.com/aiortc/aiortc/issues/331
-
-        def out_recorder_factory() -> MediaRecorder:
-                return MediaRecorder(str(out_file), format="flv")
-        
-        def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-            img = frame.to_ndarray(format="bgr24")
-
-            # perform edge detection
-            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
-
-            return av.VideoFrame.from_ndarray(img, format="bgr24")
-
-        with record_placeholder:
-            webrtc_streamer(
-            key="record",
-            mode=WebRtcMode.SENDRECV,
-            # rtc_configuration={"iceServers": get_ice_servers()},
-            # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-            rtc_configuration={"iceServers":token.ice_servers},
-            media_stream_constraints={
-                "video": True,
-                "audio": True,
-            },
-            video_frame_callback=video_frame_callback,
-            in_recorder_factory=in_recorder_factory,
-            out_recorder_factory=out_recorder_factory,
-            )
-            # webrtc_streamer(key='example')
-
-            if in_file.exists():
-                with in_file.open("rb") as f:
-                    st.download_button(
-                        "Download the recorded video without video filter", f, "input.flv"
-                    )
-            if out_file.exists():
-                with out_file.open("rb") as f:
-                    st.download_button(
-                        "Download the recorded video with video filter", f, "output.flv"
-                    )
-
-        prompt_placeholder.empty()  
+        reaappear = 1
 
     elif choice == 'No :heavy_multiplication_x:':
         st.session_state.history.append('No')
         st.session_state.history.append(ariel_script[4])
+        reaappear = 0
+    
+    return reaappear
 
 st.title('chatbot')
+if 'last_user' in st.session_state:
+    if st.session_state.last_user != email:
+        st.session_state.clear()
 
 initialize_session_state()
 
@@ -164,7 +114,7 @@ record_placeholder = st.empty()
 
 with prompt_placeholder.form("chat-form"):
     cols = st.columns((6,1))
-
+    
     with cols[0]:
         choice = st.radio(
        "Please select 'yes' and 'no' accordingly",
@@ -175,7 +125,7 @@ with prompt_placeholder.form("chat-form"):
     with cols[1]:
         submit_button = st.form_submit_button()
         if submit_button:
-            choice_change()
+            st.session_state.recorder = choice_change()
 
 with chat_placeholder:
     for chat in st.session_state.history[:3]:
@@ -187,15 +137,6 @@ with chat_placeholder:
             </div>
             """
             st.markdown(div, unsafe_allow_html=True)
-    # for chat in st.session_state.history[3:]:
-    #     image = img_to_html('docs/static/user_icon.jpeg')
-    #     div = f"""
-    #     <div class="chat-row row-reverse">
-    #         {image}
-    #         <div class="human-bubble">&#8203;{chat}</div>
-    #     </div>
-    #     """
-    #     st.markdown(div, unsafe_allow_html=True)
         
     for chat in st.session_state.history[3:]:
             userimage = img_to_html('docs/static/user_icon.jpeg')
@@ -215,64 +156,122 @@ with chat_placeholder:
             """
             st.markdown(div, unsafe_allow_html=True)
 
-# with record_placeholder:
-#     webrtc_streamer(key='example')
 record_placeholder = st.container()
-account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
-auth_token = "626e9bf064c5bdc07f618a01f384e7f2"
-client = Client(account_sid, auth_token)
 
-token = client.tokens.create()
+if 'recorder' in st.session_state:
+    if st.session_state.recorder == 1 :
+        prompt_placeholder.empty()
+        account_sid = "ACbd4b35f39a2bf507fcc89a9f12d85056"
+        auth_token = "04b7ce3b5ce46a854573c9607a743152"
+        client = Client(account_sid, auth_token)
 
-RECORD_DIR = Path("./records")
-RECORD_DIR.mkdir(exist_ok=True)
+        token = client.tokens.create()
 
-if "prefix" not in st.session_state:
-    st.session_state["prefix"] = str(uuid.uuid4())
-prefix = st.session_state["prefix"]
-in_file = RECORD_DIR / f"{prefix}_input.flv"
-out_file = RECORD_DIR / f"{prefix}_output.flv"
+        RECORD_DIR = Path("./records")
+        RECORD_DIR.mkdir(exist_ok=True)
+        timenow = str(datetime.datetime.now())
+        timenow = re.sub(' ','_',timenow)
+        timenow = re.sub(':','.',timenow)
 
-def in_recorder_factory() -> MediaRecorder:
-            return MediaRecorder(
-                str(in_file), format="flv"
-            )  # HLS does not work. See https://github.com/aiortc/aiortc/issues/331
+        if "prefix" not in st.session_state:
+            st.session_state["prefix"] = timenow
+        prefix = st.session_state["prefix"]
+        if 'prefix2' in st.session_state:
+            prefix = st.session_state["prefix2"]
+        if 'prefix3' in st.session_state:
+            prefix = st.session_state["prefix3"]
+        in_file = RECORD_DIR / f"{prefix}_input.mp4"
+        verify = in_file.exists()
+        # print(verify)
+             
 
-def out_recorder_factory() -> MediaRecorder:
-                return MediaRecorder(str(out_file), format="flv")
+        def in_recorder_factory() -> MediaRecorder:
+                    return MediaRecorder(
+                        str(in_file), format="mp4"
+                    ) 
+                
+        def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+                    img = frame.to_ndarray(format="bgr24")
+
+                    return av.VideoFrame.from_ndarray(img, format="bgr24")
+
+        def questionend():
+            global record_placeholder
+            record_placeholder = st.empty()
+            record_placeholder = st.container() 
+            st.session_state.history.append(ariel_script[11])
+            record_placeholder.empty()
+
+        def questionthree():
+            global record_placeholder
+            record_placeholder = st.empty()
+            record_placeholder = st.container() 
+            timenow3 = str(datetime.datetime.now())
+            timenow3 = re.sub(' ','_',timenow3)
+            timenow3 = re.sub(':','.',timenow3)
+            if 'prefix3'  not in  st.session_state:
+                st.session_state["prefix3"] = timenow3
+            if email == 'email':
+                st.session_state.history.append(ariel_script[9])
+            elif email == 'yes':
+                st.session_state.history.append(ariel_script[10])
+
         
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-            img = frame.to_ndarray(format="bgr24")
+        def questiontwo():
+            global record_placeholder
+            record_placeholder = st.empty()
+            record_placeholder = st.container() 
+            timenow2 = str(datetime.datetime.now())
+            timenow2 = re.sub(' ','_',timenow2)
+            timenow2 = re.sub(':','.',timenow2)
+            if 'prefix2'  not in  st.session_state:
+                st.session_state["prefix2"] = timenow2
+            if email == 'email':
+                st.session_state.history.append(ariel_script[6])
+            elif email == 'yes':
+                st.session_state.history.append(ariel_script[8])
 
-            # perform edge detection
-            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
+        def add_counter():
+            if 'verify_count' not in st.session_state:
+                st.session_state.verify_count = 0
+            else:
+                st.session_state.verify_count += 1
+            print(st.session_state.verify_count)
 
-            return av.VideoFrame.from_ndarray(img, format="bgr24")
-
-with record_placeholder:
-            webrtc_streamer(
-            key="record",
-            mode=WebRtcMode.SENDRECV,
-            # rtc_configuration={"iceServers": get_ice_servers()},
-            # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-            rtc_configuration={"iceServers":token.ice_servers},
-            media_stream_constraints={
-                "video": True,
-                "audio": True,
-            },
-            video_frame_callback=video_frame_callback,
-            in_recorder_factory=in_recorder_factory,
-            out_recorder_factory=out_recorder_factory,
+        if 'end' not in st.session_state:
+            with record_placeholder:
+                ctx = webrtc_streamer(
+                    key="record",
+                    mode=WebRtcMode.SENDRECV,
+                    rtc_configuration={"iceServers":token.ice_servers},
+                    media_stream_constraints={
+                        "video": True,
+                        "audio": True,
+                    },
+                    video_frame_callback=video_frame_callback,
+                    in_recorder_factory=in_recorder_factory,
+                    on_change=add_counter
             )
-            # webrtc_streamer(key='example')
+        
+            # if ctx.state.playing == False and ctx.state.signalling == False:
+            #     if 'verify_count' not in st.session_state:
+            #         counter = 0
+            #     else:
+            #         counter = int(st.session_state.verify_count)
+            #     counter += 1
+            #     st.session_state.verify_count = counter
+            if 'verify_count' in st.session_state:
+                if st.session_state.verify_count == 1:
+                        st.session_state.history.append("Recording#1 Sent")
+                        questiontwo()
 
-if in_file.exists():
-                with in_file.open("rb") as f:
-                    st.download_button(
-                        "Download the recorded video without video filter", f, "input.flv"
-                    )
-if out_file.exists():
-                with out_file.open("rb") as f:
-                    st.download_button(
-                        "Download the recorded video with video filter", f, "output.flv"
-                    )
+                if st.session_state.verify_count == 4:
+                        st.session_state.history.append("Recording#2 Sent")
+                        questionthree()
+
+                if st.session_state.verify_count == 7:
+                        st.session_state.history.append("Recording#3 Sent")
+                        questionend()
+                        st.session_state.end = 1
+                        st.session_state.last_user = email
+                        #print(2, st.session_state.last_user, email)
