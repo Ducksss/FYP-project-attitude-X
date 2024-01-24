@@ -27,8 +27,8 @@ email = cookie_manager.get(cookie='email')
 #Hide Pages after login
 if email == 'admin':
     hide_pages(["Login","Chatbot"])
-elif email == 'email' or 'yes':
-     hide_pages(["Login","Charts","Video","Home"])
+else:
+     hide_pages(["Login","Charts","Video","Home","Edit"])
 
 #Logout Button
 logout = st.sidebar.button("Logout")

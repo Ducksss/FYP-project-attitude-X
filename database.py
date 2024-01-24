@@ -47,7 +47,7 @@ def insert_interview(counter,name,transcript,summary,url_list):
         }
 
     x = interview_col.insert_one(mydict)
-    return
+    return x
 
 def insert_personality(counter,type, questions):
     mydict =  {

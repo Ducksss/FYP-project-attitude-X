@@ -18,7 +18,7 @@ show_pages(
         Page("pages/charts.py", "Charts", ":chart_with_upwards_trend:"),
         Page("pages/chatbot.py", "Chatbot", ":robot_face:"),
         Page("pages/video.py", "Video", ":movie_camera:"),
-        Page("pages/edit.py", "Edit", ":movie_camera:")
+        Page("pages/edit.py", "Edit", ":pencil2:")
         ]
 )
 hide_pages(["About", "Home", "Charts", "Chatbot", "Video"])

@@ -9,6 +9,7 @@ from st_pages import hide_pages
 #Importing functions
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
+from database import get_ovr_score_desc
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -20,17 +21,19 @@ dataprocessor = dataProcessor()
 dataprocessor.local_css()
 
 #Hide Pages before Login
-hide_pages(["About", "Home", "Charts", "Chatbot", "Video"])
+hide_pages(["About", "Home", "Charts", "Chatbot", "Video","Edit"])
+
+df = get_ovr_score_desc(0.4,0.4,0.2)
 
 # Create an empty container
 placeholder = st.empty()
 
 admin_email = "admin"
 admin_password = "admin"
-user1_email = "email"
-user1_password = "password"
-user2_email = "yes"
-user2_password = "hi"
+user_password = "hi"
+
+
+
 
 # Insert a form in the container
 with placeholder.form("login"):
@@ -45,7 +48,7 @@ with placeholder.form("login"):
         submit = st.form_submit_button("Login",use_container_width=True)
 
 if submit:
-    if email == admin_email and password == admin_password or email == user1_email and password == user1_password or email == user2_email and password == user2_password:
+    if email == admin_email and password == admin_password or (email in df['email'].unique() and password == user_password):
         # If the form is submitted and the email and password are correct,
         # clear the form/container and display a success message
         st.session_state.email = email
@@ -53,7 +56,5 @@ if submit:
         st.success("Login successful")
         time.sleep(0.5)
         switch_page('About')
-    elif email != admin_email or password != admin_password or email != user1_email or password != user1_password or email != user2_email or password != user2_password:        
-        st.toast(":red Login failed",icon='🚨')
     else:
-        pass
+        st.toast(":red Login failed",icon='🚨')

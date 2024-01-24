@@ -26,6 +26,10 @@ dataprocessor = dataProcessor()
 
 dataprocessor.local_css()
 
+st.markdown('<style>label p{font-size:18px !important; font-weight:bold; color: rgb(150, 150, 150)}</style>',unsafe_allow_html=True)
+
+st.title('Database Management :pencil2:')
+
 def get_counter(df):
     if len(df.index) == 0:
         counter = 1
@@ -33,13 +37,14 @@ def get_counter(df):
         counter = max(df["_id"]) + 1
     return counter
 
-#Hide pages after login
-hide_pages(["Login"])
-
 cookie_manager = CookieManager()
-
-#Initialize email
 email = cookie_manager.get(cookie='email')
+
+#Hide Pages after login
+if email == 'admin':
+    hide_pages(["Login","Chatbot"])
+else:
+     hide_pages(["Login","Charts","Video","Home","Edit"])
 
 #Logout Button
 logout = st.sidebar.button("Logout")
@@ -60,20 +65,23 @@ if st.selectbox('Which database would you like to view?',['Personality','Applica
                 if st.form_submit_button('Insert'):
                     insert_personality(counter,p_type,questionList)
                     st.toast(f"Entry has been :green[successfully uploaded]!", icon='🎉')
-                    st.rerun()
 
         else:
             counter = get_counter(get_applicantPers())
             df1 = get_ovr_score_desc(0.4,0.4,0.2)
             df2 = get_personality()
             with st.form('Insert Applicant/Personality',clear_on_submit=True):
-                applicant = st.selectbox('Applicant',[x for x in df1['name'].unique()],index=None,placeholder='Select applicant...',label_visibility='hidden')
-                st.divider()
-                personality = st.selectbox('Question',[x for x in df2['personality_type'].unique()],index=None,placeholder='Select personality type...',label_visibility='hidden')
-                if st.form_submit_button('Insert'):
-                    insert_applicantPers(counter,applicant,personality)
-                    st.toast(f"Entry has been :green[successfully uploaded]!", icon='🎉')
-                    st.rerun()
+                try:
+                    applicant = st.selectbox('Applicant',[x for x in df1['name'].unique()],index=None,placeholder='Select applicant...',label_visibility='hidden')
+                    st.divider()
+                    personality = st.selectbox('Question',[x for x in df2['personality_type'].unique()],index=None,placeholder='Select personality type...',label_visibility='hidden')
+                    if st.form_submit_button('Insert'):
+                        insert_applicantPers(counter,applicant,personality)
+                        st.toast(f"Entry has been :green[successfully uploaded]!", icon='🎉')
+
+                except KeyError:
+                    deadButton = st.form_submit_button('Insert')
+                    st.error('Database is not populated!')
 
     with tab2:
         if st.session_state.db == 'Personality':
