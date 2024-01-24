@@ -66,6 +66,17 @@ input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],bu
     background-color: whitesmoke;
 }
 
+input[aria-label='Timestamp Input (seconds)']{
+    background-color: white;
+}
+
+textarea[aria-label='What is the new value?'],
+textarea[aria-label='What are the questions to be asked for this Personality Type? (separate questions using "Enter")'],
+input[aria-label='What is the name of the Personality Type?'],
+input[aria-label='What is the new value?']{
+    background-color: whitesmoke;
+}
+
 .e1f1d6gn4{
     padding-top: 10px;
 }
@@ -112,4 +123,11 @@ div[data-testid="stForm"]{
     border-radius: 10px;
     padding: 5px 10px;
     margin-left: 10px;
+}
+
+.human-bubble {
+    background: linear-gradient(135deg, rgb(0, 178, 255) 0%, rgb(0, 106, 255) 100%); 
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
 }

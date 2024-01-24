@@ -8,6 +8,7 @@ from st_pages import hide_pages
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
+from extra_streamlit_components import CookieManager
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -18,12 +19,25 @@ dataprocessor = dataProcessor()
 
 dataprocessor.local_css()
 
+cookie_manager = CookieManager()
+
+if 'email' not in st.session_state:
+    cookie_manager.get(cookie='email')
+else:
+    cookie_manager.set('email',st.session_state.email)
+
+email = cookie_manager.get(cookie='email')
+
 #Hide Pages after login
-hide_pages(["Login"])
+if email == 'admin':
+    hide_pages(["Login","Chatbot"])
+else:
+    hide_pages(["Login","Charts","Video","Home","Edit"])
 
 #Logout Button
 logout = st.sidebar.button("Logout")
 if logout:
+    cookie_manager.delete('email')
     switch_page('Login')
 
 ##Start of Page

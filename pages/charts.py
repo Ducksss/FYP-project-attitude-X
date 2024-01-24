@@ -8,6 +8,7 @@ from st_pages import hide_pages
 import plotly.figure_factory as ff
 from utility.classes import dataProcessor
 from streamlit_extras.switch_page_button import switch_page
+from extra_streamlit_components import CookieManager
 
 ##Importing Functions
 from database import get_ovr_score_desc
@@ -16,15 +17,23 @@ from database import get_ovr_score_desc
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
 sys.path.append(absolute_path)  # Add the absolute path to the system path
 
-#Hide pages after login
-hide_pages(["Login"])
 dataprocessor = dataProcessor()
 
 dataprocessor.local_css()
 
+cookie_manager = CookieManager()
+email = cookie_manager.get(cookie='email')
+
+#Hide Pages after login
+if email == 'admin':
+    hide_pages(["Login","Chatbot"])
+else:
+     hide_pages(["Login","Charts","Video","Home","Edit"])
+
 #Logout Button
 logout = st.sidebar.button("Logout")
 if logout:
+    cookie_manager.delete('email')
     switch_page('Login')
 
 ##Start of Page
