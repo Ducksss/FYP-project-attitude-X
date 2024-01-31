@@ -24,7 +24,7 @@ sys.path.append(absolute_path)  # Add the absolute path to the system path
 # Create Class instance
 dataprocessor = dataProcessor()
 
-dataprocessor.local_css()
+dataprocessor.local_css(2)
 
 cookie_manager = CookieManager()
 email = cookie_manager.get(cookie='email')
@@ -34,8 +34,6 @@ if email == 'admin':
     hide_pages(["Login","Chatbot"])
 else:
      hide_pages(["Login","Charts","Video","Home","Edit"])
-
-st.title('Interview Analysis :movie_camera:')
 
 #Logout Button
 logout = st.sidebar.button("Logout")
@@ -53,7 +51,6 @@ else:
     
 # Change font size of questions
 st.markdown('<style>label p{font-size:18px !important; font-weight:bold; color: rgb(150, 150, 150)}</style>',unsafe_allow_html=True)
-    
 # with st.form("Upload Form",clear_on_submit=True):
 #     upload_files = st.file_uploader('Upload Video/Audio',type=['mp4'],label_visibility='hidden',accept_multiple_files=True)
 #     #Check that process button was clicked
@@ -112,33 +109,47 @@ st.markdown('<style>label p{font-size:18px !important; font-weight:bold; color: 
 if df.empty:
     st.error('Database for interviews is empty!')
 else:
-    if st.selectbox("Which applicant's interview would you like to view?",list(df['name']),key='applicant',index=None,placeholder="Select applicant..."):
+    col1, gap, col2 = st.columns([0.35, 0.15, 0.5])
+    with col1:
+        st.title('Interview Analysis :movie_camera:')
+        applicant = st.selectbox("Which applicant's interview would you like to view?",list(df['name']),key='applicant',index=None,placeholder="Select applicant...")
         st.divider()
-        if st.selectbox("Which question would you like to view?",list(df['transcript'].values[0].keys()),key='question',index=None,placeholder="Select question..."):
-            st.divider()
-            tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
-            if 'applicant' in st.session_state:
-                applicant_df = df[df['name']== st.session_state.applicant]
-                question = st.session_state.question
-                with tab1:
-                    url = applicant_df['url_list'].values[0][question]
-                    if st.text_input('Timestamp Input (seconds)',key='timestamp'):
-                        if st.session_state.timestamp.isnumeric():
-                            timestamp = int(st.session_state.timestamp)
-                            st.markdown(f'<iframe src="{url.split("?")[0]}?t={timestamp}s" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
-
-                        else:
-                            st.toast(':red[Hey!] Ensure timestamp is numeric!', icon='👺')
-                            st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
+        applicant_df = df[df['name']== st.session_state.applicant]
+        if applicant:
+            question = st.selectbox("Which question would you like to view?",list(applicant_df['transcript'].values[0].keys()),key='question',index=None,placeholder="Select question...")
+        else:
+            st.selectbox("Which question would you like to view?",[],key='question',index=None,placeholder="Select question...",disabled=True )
+        st.divider()
+        
+    with col2:
+        tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
+        if applicant and question:
+            with tab1:
+                url = applicant_df['url_list'].values[0][question]
+                if st.text_input('Timestamp Input (seconds)',key='timestamp'):
+                    if st.session_state.timestamp.isnumeric():
+                        timestamp = int(st.session_state.timestamp)
+                        st.markdown(f'<iframe src="{url.split("?")[0]}?t={timestamp}s" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
                     else:
+                        st.toast(':red[Hey!] Ensure timestamp is numeric!', icon='👺')
                         st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-                with tab2:
-                    transcript = applicant_df['transcript'].values[0][question]
-                    stx.scrollableTextbox(transcript,fontFamily="Source Sans Pro, sans-serif",height=150)
-                    st.download_button('Download Transcript', transcript,file_name='transcript.txt',key=question)
+                else:
+                    st.markdown(f'<iframe src="{url}" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-                with tab3:
-                    summary = applicant_df['summary'].values[0][question]
-                    st.text(summary)
+            with tab2:
+                transcript = applicant_df['transcript'].values[0][question]
+                stx.scrollableTextbox(transcript,fontFamily="Source Sans Pro, sans-serif",height=250)
+                st.download_button('Download Transcript', transcript,file_name='transcript.txt',key=question)
+
+            with tab3:
+                summary = applicant_df['summary'].values[0][question]
+                st.text(summary)
+        else:
+            with tab1:
+                st.error('Please select applicant and interview question!')
+            with tab2:
+                st.error('Please select applicant and interview question!')
+            with tab3:
+                st.error('Please select applicant and interview question!')

@@ -12,6 +12,15 @@ services:
     volumes:
       - mongodb-data:/data/db
 
+  fer_model:
+    build:
+      context: ./models/
+    container_name: fer_model
+    ports:
+      - "8080:8080"
+    networks:
+      - mongo-network
+
   streamlit-app:
     build:
       context: .
@@ -20,10 +29,11 @@ services:
       - "8501:8501"
     depends_on:
       - database
+      - fer_model
     networks:
       - mongo-network
     environment:
-      - API_KEY=UJGOceHjyxw1ONsrcllJzmXDffiF8XRK
+      - API_KEY=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
 
 volumes:
   mongodb-data:

@@ -20,6 +20,8 @@ from database import insert_interview, get_interview, get_personality, get_appli
 from utility.speech_tagger import transcribeFile
 from utility.ner import transcription_prompt
 from utility.cloud import uploadFile
+from utility.recorder import Recorder
+import keyboard
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -48,39 +50,7 @@ if email == 'admin':
 else:
      hide_pages(["Login","Charts","Video","Home","Edit"])
 
-#Logout Button
-logout = st.sidebar.button("Logout")
-if logout:
-    cookie_manager.delete('email')
-    switch_page('Login')
-
-df = get_interview()
-if len(df.index) == 0:
-    id_counter = 1
-else:
-    id_counter = max(df["_id"]) + 1
-
-df2 = get_personality()
-df3 = get_applicantPers()
-df4 = get_ovr_score_desc(0.4,0.4,0.2)
-
-applicantName = df4['name'][df4['email'] == email].values[0]
-personality_type = df3['personality_type'][df3['applicant'] == applicantName].values[0]
-personality_questions = df2['questions'][df2['personality_type'] == personality_type].values[0]
-
-#chatbot script
-ariel_script = [
-    "Hello! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
-    "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
-    "Please respond with 'yes' if you acknowledge",
-    "Great! Let's move on. I'm about to present your initial question. Click the pop-up recording button to start recording when you're prepared. Once finished, click the button again to submit. Keep in mind, there won't be any retakes, mirroring the authenticity of a real-life interview.",
-    "Sure, please click 'yes' when you are ready to move on.",    
-    "This is the end of the interview thank you for your time. Please do not close or exit this page until the next message appears. Thank you for your cooperation.",
-    "Thank you for your patience, you may now close this page. Goodbye.",
-    "After you click the start button, you have about 30-60s of preperation time. Once the webcam is set up, you may test your microphone for the first 10 seconds and mute the audio at the bottom right of the camera should you want to turn off microphone feedback. I wish you the best for this interview, good luck!"
-] 
-ariel_script = ariel_script + personality_questions
-
+#Define Functions
 def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
     encoded = base64.b64encode(img_bytes).decode()
@@ -91,10 +61,6 @@ def img_to_html(img_path):
       img_to_bytes(img_path)
     )
     return img_html
-
-# def on_click_callback():
-#     human_prompt=st.session_state.human_prompt
-#     st.session_state.history.append(human_prompt)
 
 def initialize_session_state():
     if "history" not in st.session_state:
@@ -132,164 +98,189 @@ def choice_change():
     
     return reaappear
 
+def record():
+    recorder = Recorder(str(st.session_state.filename))
+    recorder.startRecording()
+    while True:
+        if keyboard.read_key() == "q":
+            recorder.stopRecording()
+            recorder.saveRecording()
+            add_counter()
+            os.remove(f'{st.session_state.filename}.avi')
+            os.remove(f'{st.session_state.filename}.wav')
+            st.rerun()
+            break
+
+#Logout Button
+logout = st.sidebar.button("Logout")
+if logout:
+    cookie_manager.delete('email')
+    switch_page('Login')
+
+df = get_interview()
+if len(df.index) == 0:
+    id_counter = 1
+else:
+    id_counter = max(df["_id"]) + 1
+
+df2 = get_personality()
+df3 = get_applicantPers()
+df4 = get_ovr_score_desc(0.4,0.4,0.2)
+
+try:
+    applicantName = df4['name'][df4['email'] == email].values[0]
+    personality_type = df3['personality_type'][df3['applicant'] == applicantName].values[0]
+    personality_questions = df2['questions'][df2['personality_type'] == personality_type].values[0]
+except IndexError:
+    st.warning('Please hold on as the page is loading!')
+
+try:
+    #chatbot script
+    ariel_script = [
+        "Hello! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
+        "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
+        "Please respond with 'yes' if you acknowledge",
+        "Great! Let's move on. I'm about to present your initial question. Click the pop-up recording button to start recording when you're prepared. Once finished, click the button again to submit. Keep in mind, there won't be any retakes, mirroring the authenticity of a real-life interview.",
+        "Sure, please click 'yes' when you are ready to move on.",    
+        "This is the end of the interview thank you for your time. Please do not close or exit this page until the next message appears. Thank you for your cooperation.",
+        "Thank you for your patience, you may now close this page. Goodbye.",
+        "After you click the start button, you have about 30-60s of preperation time. Once the webcam is set up, you may test your microphone for the first 10 seconds and mute the audio at the bottom right of the camera should you want to turn off microphone feedback. I wish you the best for this interview, good luck!"
+    ] 
+    ariel_script = ariel_script + personality_questions
+
+except NameError:
+    pass
+
 st.title('HR Interview Chatbot :robot_face:')
 
-initialize_session_state()
+try:
+    if applicantName in df['name'].unique():
+        st.success('You have successfully completed the interview!')
+    else:
+        initialize_session_state()
 
-chat_placeholder = st.container()
-# prompt_placeholder = st.form("chat-form")
-prompt_placeholder = st.empty()
-record_placeholder = st.empty()
-# record_placeholder = st.container()
+        chat_placeholder = st.container()
+        # prompt_placeholder = st.form("chat-form")
+        prompt_placeholder = st.empty()
+        record_placeholder = st.empty()
+        # record_placeholder = st.container()
 
-with prompt_placeholder.form("chat-form"):
-    cols = st.columns((6,1))
-    
-    with cols[0]:
-        choice = st.radio(
-       "Please select 'yes' and 'no' accordingly",
-       ["Yes :heavy_check_mark:", "No :heavy_multiplication_x:"],
-       horizontal=True,
-       key = "human_prompt"
-    )
-    with cols[1]:
-        submit_button = st.form_submit_button()
-        if submit_button:
-            st.session_state.recorder = choice_change()
-
-with chat_placeholder:
-    for chat in st.session_state.history[:3]:
-        image = img_to_html('docs/static/hr_icon.jpeg')
-        div = f"""
-        <div class="chat-row">
-            {image}
-            <div class="ai-bubble">&#8203;{chat}</div>
-        </div>
-        """
-        st.markdown(div, unsafe_allow_html=True)
-        
-    for chat in st.session_state.history[3:]:
-        userimage = img_to_html('docs/static/user_icon.jpeg')
-        aiimage = img_to_html('docs/static/hr_icon.jpeg')
-        div = f"""
-        <div class= "chat-row
-            {"" if chat in ariel_script
-                else "chat-row row-reverse"
-        }">
-            {aiimage if chat in ariel_script
-                    else userimage}
-            <div class={
-                 "ai-bubble" if chat in ariel_script
-                                else "human-bubble"
-            }>&#8203;{chat}</div>
-        </div>
-        """
-        st.markdown(div, unsafe_allow_html=True)
-
-record_placeholder = st.container()
-
-if 'recorder' in st.session_state:
-    if st.session_state.recorder == 1 :
-        prompt_placeholder.empty()
-        if 'server_auth.json' in os.listdir('./docs/'):
-            with open('./docs/server_auth.json') as server_file:
-                server = json.load(server_file)
-                account_sid = server['account_sid']
-                auth_token = server['auth_token']
-
-        client = Client(account_sid, auth_token)
-
-        token = client.tokens.create()
-
-        RECORD_DIR = Path("./records")
-        RECORD_DIR.mkdir(exist_ok=True)
-        timenow = str(datetime.datetime.now())
-        timenow = re.sub(' ','_',timenow)
-        timenow = re.sub(':','.',timenow)
-
-        if "prefix" not in st.session_state:
-            st.session_state["prefix"] = timenow
-        prefix = st.session_state["prefix"]
-        if 'prefix2' in st.session_state:
-            prefix = st.session_state["prefix2"]
-        if 'prefix3' in st.session_state:
-            prefix = st.session_state["prefix3"]
-        in_file = RECORD_DIR / f"{prefix}_input.mp4"
-        verify = in_file.exists()
-        # print(verify)
-             
-
-        def in_recorder_factory() -> MediaRecorder:
-                    return MediaRecorder(
-                        str(in_file), format="mp4"
-                    ) 
-                
-        def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-                    img = frame.to_ndarray(format="bgr24")
-
-                    return av.VideoFrame.from_ndarray(img, format="bgr24")
-
-        def questionend():
-            st.session_state.history.append(ariel_script[5])
-
-        def questionthree():
-            timenow3 = str(datetime.datetime.now())
-            timenow3 = re.sub(' ','_',timenow3)
-            timenow3 = re.sub(':','.',timenow3)
-            if 'prefix3'  not in  st.session_state:
-                st.session_state["prefix3"] = timenow3
-            st.session_state.history.append(ariel_script[10])
-        
-        def questiontwo():
-            timenow2 = str(datetime.datetime.now())
-            timenow2 = re.sub(' ','_',timenow2)
-            timenow2 = re.sub(':','.',timenow2)
-            if 'prefix2'  not in  st.session_state:
-                st.session_state["prefix2"] = timenow2
-            st.session_state.history.append(ariel_script[9])
-
-        def add_counter():
-            if 'verify_count' not in st.session_state:
-                st.session_state.verify_count = 0
-            else:
-                st.session_state.verify_count += 1
-
-        if 'end' not in st.session_state:
-            cookie_manager.set('last_user',email)
-            with record_placeholder:
-                ctx = webrtc_streamer(
-                    key="record",
-                    mode=WebRtcMode.SENDRECV,
-                    rtc_configuration={"iceServers":token.ice_servers},
-                    media_stream_constraints={
-                        "video": True,
-                        "audio": True,
-                    },
-                    video_frame_callback=video_frame_callback,
-                    in_recorder_factory=in_recorder_factory,
-                    on_change=add_counter
-            )
-        
-            if 'verify_count' in st.session_state:
-                if st.session_state.verify_count == 1:
-                    st.session_state.history.append("Recording#1 Sent")
-                    questiontwo()
-
-                if st.session_state.verify_count == 4:
-                    st.session_state.history.append("Recording#2 Sent")
-                    questionthree()
-
-                if st.session_state.verify_count == 7:
-                    st.session_state.history.append("Recording#3 Sent")
-                    questionend()
-                    st.session_state.end = 1
-                    # st.session_state.verify_count += 1
-
-        elif st.session_state.end == 1:
-            vidDict = {}
-            vidDict[ariel_script[8]] = RECORD_DIR / f"{st.session_state.prefix}_input.mp4"
-            vidDict[ariel_script[9]] = RECORD_DIR / f"{st.session_state.prefix2}_input.mp4"
-            vidDict[ariel_script[10]] = RECORD_DIR / f"{st.session_state.prefix3}_input.mp4"
-            videoUpload(vidDict)
+        with prompt_placeholder.form("chat-form"):
+            cols = st.columns((6,1))
             
-             
+            with cols[0]:
+                choice = st.radio(
+            "Please select 'yes' and 'no' accordingly",
+            ["Yes :heavy_check_mark:", "No :heavy_multiplication_x:"],
+            horizontal=True,
+            key = "human_prompt"
+            )
+            with cols[1]:
+                submit_button = st.form_submit_button()
+                if submit_button:
+                    st.session_state.recorder = choice_change()
+
+        with chat_placeholder:
+            for chat in st.session_state.history[:3]:
+                image = img_to_html('docs/static/hr_icon.jpeg')
+                div = f"""
+                <div class="chat-row">
+                    {image}
+                    <div class="ai-bubble">&#8203;{chat}</div>
+                </div>
+                """
+                st.markdown(div, unsafe_allow_html=True)
+                
+            for chat in st.session_state.history[3:]:
+                userimage = img_to_html('docs/static/user_icon.jpeg')
+                aiimage = img_to_html('docs/static/hr_icon.jpeg')
+                div = f"""
+                <div class= "chat-row
+                    {"" if chat in ariel_script
+                        else "chat-row row-reverse"
+                }">
+                    {aiimage if chat in ariel_script
+                            else userimage}
+                    <div class={
+                        "ai-bubble" if chat in ariel_script
+                                        else "human-bubble"
+                    }>&#8203;{chat}</div>
+                </div>
+                """
+                st.markdown(div, unsafe_allow_html=True)
+
+        record_placeholder = st.container()
+
+        if 'recorder' in st.session_state:
+            if st.session_state.recorder == 1 :
+                prompt_placeholder.empty()
+                RECORD_DIR = Path("./records")
+                RECORD_DIR.mkdir(exist_ok=True)
+                timenow = str(datetime.datetime.now())
+                timenow = re.sub(' ','_',timenow)
+                timenow = re.sub(':','.',timenow)
+
+                if "prefix" not in st.session_state:
+                    st.session_state["prefix"] = timenow
+                prefix = st.session_state["prefix"]
+                if 'prefix2' in st.session_state:
+                    prefix = st.session_state["prefix2"]
+                if 'prefix3' in st.session_state:
+                    prefix = st.session_state["prefix3"]
+                in_file = RECORD_DIR / f"{prefix}_input"
+                verify = in_file.exists()
+                # print(verify)
+                    
+                def questionend():
+                    st.session_state.history.append(ariel_script[5])
+
+                def questionthree():
+                    timenow3 = str(datetime.datetime.now())
+                    timenow3 = re.sub(' ','_',timenow3)
+                    timenow3 = re.sub(':','.',timenow3)
+                    if 'prefix3'  not in  st.session_state:
+                        st.session_state["prefix3"] = timenow3
+                    st.session_state.history.append(ariel_script[10])
+                
+                def questiontwo():
+                    timenow2 = str(datetime.datetime.now())
+                    timenow2 = re.sub(' ','_',timenow2)
+                    timenow2 = re.sub(':','.',timenow2)
+                    if 'prefix2'  not in  st.session_state:
+                        st.session_state["prefix2"] = timenow2
+                    st.session_state.history.append(ariel_script[9])
+
+                def add_counter():
+                    if 'verify_count' not in st.session_state:
+                        st.session_state.verify_count = 0
+                    else:
+                        st.session_state.verify_count += 1
+
+                if 'end' not in st.session_state:
+                    cookie_manager.set('last_user',email)
+                    st.session_state.filename = in_file
+                    if st.button('Start Recording',on_click=record):
+                        if 'verify_count' in st.session_state:
+                            if st.session_state.verify_count == 0:
+                                st.session_state.history.append("Recording#1 Sent")
+                                questiontwo()
+
+                            if st.session_state.verify_count == 1:
+                                st.session_state.history.append("Recording#2 Sent")
+                                questionthree()
+
+                            if st.session_state.verify_count == 2:
+                                st.session_state.history.append("Recording#3 Sent")
+                                questionend()
+                                st.session_state.end = 1
+                                st.rerun()
+
+                elif st.session_state.end == 1:
+                    vidDict = {}
+                    vidDict[ariel_script[8]] = RECORD_DIR / f"{st.session_state.prefix}_input.mp4"
+                    vidDict[ariel_script[9]] = RECORD_DIR / f"{st.session_state.prefix2}_input.mp4"
+                    vidDict[ariel_script[10]] = RECORD_DIR / f"{st.session_state.prefix3}_input.mp4"
+                    videoUpload(vidDict)
+                    
+except NameError:
+    pass

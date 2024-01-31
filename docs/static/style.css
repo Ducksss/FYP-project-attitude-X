@@ -70,11 +70,12 @@ input[aria-label='Timestamp Input (seconds)']{
     background-color: white;
 }
 
-textarea[aria-label='What is the new value?'],
-textarea[aria-label='What are the questions to be asked for this Personality Type? (separate questions using "Enter")'],
-input[aria-label='What is the name of the Personality Type?'],
-input[aria-label='What is the new value?']{
-    background-color: whitesmoke;
+textarea[aria-label='What are the questions to be asked for this Personality Type? (separate questions using "Enter") :speech_balloon:'],
+textarea[aria-label='What question(s) to update to? :speech_balloon:'],
+input[aria-label='What is the new personality? :face_with_monocle:'],
+input[aria-label='What is the name of the Personality Type? :face_with_monocle:']
+{
+    background-color: #FDFDFD;
 }
 
 .e1f1d6gn4{

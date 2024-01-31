@@ -4,6 +4,13 @@ from st_pages import Page, show_pages, add_page_title
 #Importing functions
 from streamlit_extras.switch_page_button import switch_page
 from st_pages import hide_pages
+from PIL import Image
+
+# Loading Image using PIL
+icon = Image.open('./docs/static/drawmetrics_icon.jpg')
+# Adding Image to web app
+st.set_page_config(page_title="Drawmetrics Applicant Tracking System", page_icon = icon)
+
 
 # Optional -- adds the title and icon to the current page
 add_page_title()

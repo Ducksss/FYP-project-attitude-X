@@ -1,9 +1,6 @@
 import whisper_timestamped as whisper
 import math
 import streamlit as st
-import cv2 as cv
-import tempfile
-import io
 
 # f = st.file_uploader("Upload file")
 # tfile = tempfile.NamedTemporaryFile(delete=False)

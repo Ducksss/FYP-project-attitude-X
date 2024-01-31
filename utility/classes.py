@@ -3,6 +3,9 @@ import re
 import streamlit as st
 from pdfminer.high_level import extract_text
 
+##Import PIL Library
+from PIL import Image
+
 ##Importing from utility 
 from utility.stopwords import filter_stopwords
 from utility.similarity_matching import get_similarity_score
@@ -17,9 +20,23 @@ class dataProcessor:
         self.contact_number = None
 
     #CSS File For Streamlit Pages
-    def local_css(self):
+    def local_css(self,default=1):
+
+        # Loading Image using PIL
+        icon = Image.open('docs/static/drawmetrics_icon.jpg')
+        # Adding Image to web app
+        if default == 1:
+            st.set_page_config(page_title="Drawmetrics Applicant Tracking System", page_icon = icon)
+        else:
+            st.set_page_config(page_title="Drawmetrics Applicant Tracking System", page_icon = icon, layout="wide")
+
         with open(self.file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+        st.markdown(""" <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        </style> """, unsafe_allow_html=True)
 
     #Functions for conversion PDF
     def convertPDFToText(self,file_path):
