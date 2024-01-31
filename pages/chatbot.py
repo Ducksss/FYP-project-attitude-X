@@ -1,29 +1,37 @@
 ##Importing Libraries
+import av
 import os
+import cv2
 import sys
-import streamlit as st
-from st_pages import hide_pages
-import streamlit as st
+import time
+import json
 import base64
-from pathlib import Path
+import datetime
+import numpy as np
+import regex as re
 from PIL import Image
+import streamlit as st
+from pathlib import Path
+from st_pages import hide_pages
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
 from aiortc.contrib.media import MediaRecorder
 from extra_streamlit_components import CookieManager
-import av
-import regex as re
 from twilio.rest import Client
-import datetime
-import time
-import json
+from tensorflow import keras
+from keras.models import model_from_json, load_model
+from keras.preprocessing.image import img_to_array
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration, VideoProcessorBase, WebRtcMode
+from typing import List, NamedTuple
+import queue
+
+##Importing Funnctions
+from utility.classes import dataProcessor
+from streamlit_extras.switch_page_button import switch_page
 from database import insert_interview, get_interview, get_personality, get_applicantPers, get_ovr_score_desc
 from utility.speech_tagger import transcribeFile
 from utility.ner import transcription_prompt
 from utility.cloud import uploadFile
-
-##Importing Funnctions
-from streamlit_extras.switch_page_button import switch_page
-from utility.classes import dataProcessor
+from utility.recorder import Recorder
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -81,6 +89,51 @@ ariel_script = [
 ] 
 ariel_script = ariel_script + personality_questions
 
+# # load model
+# emotion_dict = {0:'angry', 1 :'disgust', 2: 'fear', 3:'happy', 4: 'sad', 5:'surprise', 6:'neutral'}
+# # load json and create model
+# # json_file = open('emotion_model1.json', 'r')
+# # loaded_model_json = json_file.read()
+# # json_file.close()
+# # classifier = model_from_json(loaded_model_json)
+
+# # # load weights into new model
+# # classifier.load_weights("emotion_model1.h5")
+
+# classifier = load_model('improved_vgg_fer.h5')
+
+# #load face
+# try:
+#     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+# except Exception:
+#     st.write("Error loading cascade classifiers")
+
+# class Faceemotion(VideoTransformerBase):
+#     def transform(self, frame):
+#         image = frame.to_ndarray(format="bgr24")
+
+#         #image gray
+#         img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#         faces = face_cascade.detectMultiScale(
+#             image=img_gray, scaleFactor=1.3, minNeighbors=5)
+#         for (x, y, w, h) in faces:
+#             cv2.rectangle(img=image, pt1=(x, y), pt2=(
+#                 x + w, y + h), color=(255, 0, 0), thickness=2)
+#             roi_gray = img_gray[y:y + h, x:x + w]
+#             roi_gray = cv2.resize(roi_gray, (48, 48), interpolation=cv2.INTER_AREA)
+#             if np.sum([roi_gray]) != 0:
+#                 roi = roi_gray.astype('float') / 255.0
+#                 roi = img_to_array(roi)
+#                 roi = np.expand_dims(roi, axis=0)
+#                 prediction = classifier.predict(roi)[0]
+#                 maxindex = int(np.argmax(prediction))
+#                 finalout = emotion_dict[maxindex]
+#                 output = str(finalout)
+#             label_position = (x, y)
+#             cv2.putText(image, output, label_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+#         return image
+
 def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
     encoded = base64.b64encode(img_bytes).decode()
@@ -91,10 +144,6 @@ def img_to_html(img_path):
       img_to_bytes(img_path)
     )
     return img_html
-
-# def on_click_callback():
-#     human_prompt=st.session_state.human_prompt
-#     st.session_state.history.append(human_prompt)
 
 def initialize_session_state():
     if "history" not in st.session_state:
@@ -107,7 +156,7 @@ def videoUpload(video_dict):
     for question, file in video_dict.items():
         transcript = transcribeFile(file)
         file_url = uploadFile(file)
-        os.remove(file)
+        #os.remove(file)
         summary = transcription_prompt(transcript)
         transcript_dict[question] = transcript
         summary_dict[question] = summary
@@ -215,15 +264,15 @@ if 'recorder' in st.session_state:
         if 'prefix3' in st.session_state:
             prefix = st.session_state["prefix3"]
         in_file = RECORD_DIR / f"{prefix}_input.mp4"
-        verify = in_file.exists()
+        out_file = RECORD_DIR / f"{prefix}_output.mp4"
+        #verify = in_file.exists()
         # print(verify)
              
-
         def in_recorder_factory() -> MediaRecorder:
                     return MediaRecorder(
                         str(in_file), format="mp4"
                     ) 
-                
+
         def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
                     img = frame.to_ndarray(format="bgr24")
 
@@ -267,7 +316,8 @@ if 'recorder' in st.session_state:
                     },
                     video_frame_callback=video_frame_callback,
                     in_recorder_factory=in_recorder_factory,
-                    on_change=add_counter
+                    on_change=add_counter,
+                    # video_processor_factory=Faceemotion
             )
         
             if 'verify_count' in st.session_state:
@@ -292,4 +342,3 @@ if 'recorder' in st.session_state:
             vidDict[ariel_script[10]] = RECORD_DIR / f"{st.session_state.prefix3}_input.mp4"
             videoUpload(vidDict)
             
-             
