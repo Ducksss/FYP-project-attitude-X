@@ -100,6 +100,17 @@ def update_applicantPers(count,column,updated_val):
 
     return
 
+def update_interview(count,new_value):
+    # Updating fan quantity from 10 to 25.
+    filter = { '_id': count }
+    
+    # Values to be updated.
+    newvalues = { "$set": { 'bounding_url_list': new_value } }
+
+    interview_col.update_one(filter, newvalues) 
+
+    return
+
 def get_interview():
     table = pd.DataFrame(interview_col.find())
 

@@ -6,3 +6,5 @@ ffprobe.exe
 ffplay.exe
 trained_model/
 models/fer_model/
+improved_vgg_fer.h5
+improved_vgg_fer.pb

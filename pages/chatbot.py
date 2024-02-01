@@ -1,21 +1,32 @@
 ##Importing Libraries
+import av
 import os
+import cv2
 import sys
-import streamlit as st
-from st_pages import hide_pages
-import streamlit as st
+import time
+import json
 import base64
-from pathlib import Path
+import datetime
+import numpy as np
+import regex as re
 from PIL import Image
+import streamlit as st
+from pathlib import Path
+from st_pages import hide_pages
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
 from aiortc.contrib.media import MediaRecorder
 from extra_streamlit_components import CookieManager
-import av
-import regex as re
 from twilio.rest import Client
-import datetime
-import time
-import json
+from tensorflow import keras
+from keras.models import model_from_json, load_model
+from keras.preprocessing.image import img_to_array
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration, VideoProcessorBase, WebRtcMode
+from typing import List, NamedTuple
+import queue
+
+##Importing Funnctions
+from utility.classes import dataProcessor
+from streamlit_extras.switch_page_button import switch_page
 from database import insert_interview, get_interview, get_personality, get_applicantPers, get_ovr_score_desc
 from utility.speech_tagger import transcribeFile
 from utility.ner import transcription_prompt
@@ -73,7 +84,7 @@ def videoUpload(video_dict):
     for question, file in video_dict.items():
         transcript = transcribeFile(file)
         file_url = uploadFile(file)
-        os.remove(file)
+        #os.remove(file)
         summary = transcription_prompt(transcript)
         transcript_dict[question] = transcript
         summary_dict[question] = summary
