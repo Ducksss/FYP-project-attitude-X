@@ -1,11 +1,9 @@
-FROM tensorflow/serving
+FROM tensorflow/serving:latest
 
-COPY . /FYP-project-attitude-X
-
-WORKDIR /FYP-project-attitude-X
+# Copy the contents of the models/fer_model directory into the image
+COPY fer_model /models/fer_model
 
 EXPOSE 8080
+EXPOSE 8081
 
-ENTRYPOINT ["tensorflow_model_server", "--model_base_path=/FYP-project-attitude-X/models/fer_model", "--model_name=fer_model"]
-
-CMD ["--rest_api_port=8080","--port=8081"]
+CMD ["tensorflow_model_server","--rest_api_port=8080","--port=8081", "--model_base_path=/models/fer_model", "--model_name=fer_model"]

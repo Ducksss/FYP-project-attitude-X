@@ -6,9 +6,10 @@ import streamlit as st
 #local host
 mongo_url = "mongodb://localhost:27017"
 #docker 
-# mongo_url = "mongodb://database:27017"
+# mongo_url = "mongodb://localhost:27012"
 
-myclient = pymongo.MongoClient(mongo_url)
+myclient = pymongo.MongoClient(mongo_url)   
+# myclient = pymongo.MongoClient('', 27017)
 mydb = myclient["resumeDB"]
 mycol = mydb["scores"]
 interview_col = mydb['interview']

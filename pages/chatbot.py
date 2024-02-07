@@ -1,28 +1,13 @@
 ##Importing Libraries
-import av
 import os
-import cv2
 import sys
-import time
-import json
 import base64
 import datetime
-import numpy as np
 import regex as re
-from PIL import Image
 import streamlit as st
 from pathlib import Path
 from st_pages import hide_pages
-from streamlit_webrtc import WebRtcMode, webrtc_streamer
-from aiortc.contrib.media import MediaRecorder
 from extra_streamlit_components import CookieManager
-from twilio.rest import Client
-from tensorflow import keras
-from keras.models import model_from_json, load_model
-from keras.preprocessing.image import img_to_array
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration, VideoProcessorBase, WebRtcMode
-from typing import List, NamedTuple
-import queue
 
 ##Importing Funnctions
 from utility.classes import dataProcessor
@@ -165,8 +150,9 @@ except NameError:
 st.title('HR Interview Chatbot :robot_face:')
 
 try:
-    if applicantName in df['name'].unique():
-        st.success('You have successfully completed the interview!')
+    if 'name' in df:
+        if applicantName in df['name'].unique():
+            st.success('You have successfully completed the interview!')
     else:
         initialize_session_state()
 

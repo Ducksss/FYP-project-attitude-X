@@ -4,18 +4,13 @@ import sys
 import streamlit as st
 from st_pages import hide_pages
 import pandas as pd
-import streamlit_scrollable_textbox as stx
 from extra_streamlit_components import CookieManager
-import math
 import time
 
 # Importing functions
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
-from utility.speech_tagger import transcribeFile
-from utility.ner import transcription_prompt
-from utility.cloud import uploadFile
-from database import get_ovr_score_desc ,get_interview, insert_personality, insert_applicantPers, get_personality, get_applicantPers, update_applicantPers, update_personality, callback
+from database import get_ovr_score_desc, insert_personality, insert_applicantPers, get_personality, get_applicantPers, update_applicantPers, update_personality, callback
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -135,39 +130,42 @@ with col1:
         with col2:
             st.title('Database Management :pencil2:')
             if database:
-                if st.session_state.db == 'Personality':
-                    st.session_state['data'] = get_personality()
-                    st.session_state.default_table = get_personality()
-                    st.session_state.dbcode = 1
-                elif st.session_state.db == 'Applicant/Personality':
-                    st.session_state['data'] = get_applicantPers()
-                    st.session_state.default_table = get_applicantPers()
-                    st.session_state.dbcode = 2
-
-                columns = st.session_state['data'].columns
-
-                column_config = {column: st.column_config.Column(disabled=True) for column in columns}
-
-                modified_df = st.session_state['data'].copy()
-                modified_df["Delete"] = False
-
-                # Make Delete be the first column
-                modified_df = modified_df[["Delete"] + modified_df.columns[:-1].tolist()]
-                if len(modified_df) > 0:
+                try:
                     if st.session_state.db == 'Personality':
-                        modified_df = modified_df[["Delete","_id","personality_type","questions"]]
-                    else:
-                        modified_df = modified_df[["Delete","_id","applicant","personality_type"]]
+                        st.session_state['data'] = get_personality()
+                        st.session_state.default_table = get_personality()
+                        st.session_state.dbcode = 1
+                    elif st.session_state.db == 'Applicant/Personality':
+                        st.session_state['data'] = get_applicantPers()
+                        st.session_state.default_table = get_applicantPers()
+                        st.session_state.dbcode = 2
 
-                st.data_editor(
-                    modified_df,
-                    key="data_editor",
-                    hide_index=True,
-                    column_config=column_config,
-                    use_container_width=True
-                )
+                    columns = st.session_state['data'].columns
 
-                st.button('Delete',on_click=callback,type='primary')
+                    column_config = {column: st.column_config.Column(disabled=True) for column in columns}
+
+                    modified_df = st.session_state['data'].copy()
+                    modified_df["Delete"] = False
+
+                    # Make Delete be the first column
+                    modified_df = modified_df[["Delete"] + modified_df.columns[:-1].tolist()]
+                    if len(modified_df) > 0:
+                        if st.session_state.db == 'Personality':
+                            modified_df = modified_df[["Delete","_id","personality_type","questions"]]
+                        else:
+                            modified_df = modified_df[["Delete","_id","applicant","personality_type"]]
+
+                    st.data_editor(
+                        modified_df,
+                        key="data_editor",
+                        hide_index=True,
+                        column_config=column_config,
+                        use_container_width=True
+                    )
+
+                    st.button('Delete',on_click=callback,type='primary')
+                except KeyError:
+                    st.warning('Database is not populated!')
 
             else:
                 st.dataframe(pd.DataFrame(),use_container_width=True)

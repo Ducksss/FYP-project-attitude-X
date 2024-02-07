@@ -6,7 +6,7 @@ services:
       context: ./mongoDocker/
     container_name: database
     ports:
-      - "27017:27017"
+      - "27012:27017"
     networks:
       - mongo-network
     volumes:
@@ -20,20 +20,6 @@ services:
       - "8080:8080"
     networks:
       - mongo-network
-
-  streamlit-app:
-    build:
-      context: .
-    container_name: streamlit-app
-    ports:
-      - "8501:8501"
-    depends_on:
-      - database
-      - fer_model
-    networks:
-      - mongo-network
-    environment:
-      - API_KEY=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
 
 volumes:
   mongodb-data:

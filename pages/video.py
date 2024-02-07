@@ -4,28 +4,23 @@ import sys
 import streamlit as st
 from st_pages import hide_pages
 import pandas as pd
-import tempfile
 import streamlit_scrollable_textbox as stx
 from extra_streamlit_components import CookieManager
-import math
 import numpy as np
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 import cv2 
-import av 
-import io
-import time
 import ffmpeg
 from pydub import AudioSegment
 from pathlib import Path
+import requests
+import json
 
 # Importing functions
 from streamlit_extras.switch_page_button import switch_page
 from utility.classes import dataProcessor
-from utility.speech_tagger import transcribeFile
-from utility.ner import transcription_prompt
 from utility.cloud import uploadFile, downloadFile
-from database import insert_interview, get_interview, update_interview
+from database import get_interview, update_interview
 
 # Set up path to utility folder
 absolute_path = os.path.join(os.path.dirname(__file__), 'utility')
@@ -62,63 +57,23 @@ else:
 
 #Start of Page
     
+class NumpyEncoder(json.JSONEncoder):
+    """ Special json encoder for numpy types """
+    def default(self, obj):
+        if isinstance(obj, (np.int_, np.intc, np.intp, np.int8,
+                            np.int16, np.int32, np.int64, np.uint8,
+                            np.uint16, np.uint32, np.uint64)):
+            return int(obj)
+        elif isinstance(obj, (np.float_, np.float16, np.float32,
+                              np.float64)):
+            return float(obj)
+        elif isinstance(obj, (np.ndarray,)):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+    
 # Change font size of questions
 st.markdown('<style>label p{font-size:18px !important; font-weight:bold; color: rgb(150, 150, 150)}</style>',unsafe_allow_html=True)
-# with st.form("Upload Form",clear_on_submit=True):
-#     upload_files = st.file_uploader('Upload Video/Audio',type=['mp4'],label_visibility='hidden',accept_multiple_files=True)
-#     #Check that process button was clicked
-#     if st.form_submit_button("Process"):
-#         if upload_files is not None:
-#             transcript_dict = {}
-#             summary_dict = {}
-#             url_dict = {}
-#             counter = 1
-#             for file in upload_files:
-#                 bytes_data = file.read()
-#                 tfile = tempfile.NamedTemporaryFile(delete=False)
-#                 tfile.write(bytes_data)
-#                 transcript = transcribeFile(tfile.name)
-#                 file_url = uploadFile(tfile.name)
-#                 filename = tfile.name
-#                 tfile.close()
-#                 os.remove(filename)
-#                 summary = transcription_prompt(transcript)
-#                 transcript_dict[f'Question {counter}'] = transcript
-#                 summary_dict[f'Question {counter}'] = summary
-#                 url_dict[f'Question {counter}'] = file_url
-#                 counter += 1
-#             insert_interview(id_counter,'test',transcript_dict,summary_dict,url_dict)
-            
-# st.divider()
-# if 'transcript' in st.session_state:
-#     tab1, tab2, tab3 = st.tabs(['Video','Transcript','Summary of Transcript'])
-#     with tab1:
-#         if 'fileID' in st.session_state:
-#             fileID = st.session_state.fileID
-#         if st.text_input('Timestamp Input (seconds)',key='timestamp'):
-#             if st.session_state.timestamp.isnumeric():
-#                 timestamp = int(st.session_state.timestamp)
-#                 # st.video(st.session_state.tempfile_name,start_time=timestamp)
-#                 st.markdown(f'<iframe src="https://drive.google.com/file/d/{fileID}/preview?t={timestamp}s" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
 
-#             else:
-#                 st.toast(':red[Hey!] Ensure timestamp is numeric!', icon='👺')
-#                 st.markdown(f'<iframe src="https://drive.google.com/file/d/{fileID}/preview?" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
-#         else:
-#             st.markdown(f'<iframe src="https://drive.google.com/file/d/{fileID}/preview?" width="640" height="480" allow="autoplay"></iframe>',unsafe_allow_html=True)
-
-#     with tab2:
-#         stx.scrollableTextbox(st.session_state.transcript,fontFamily="Source Sans Pro, sans-serif",height=150)
-#         st.download_button('Download Transcript', st.session_state.transcript,file_name='transcript.txt')
-
-#     with tab3:
-#         lines = st.session_state.transcript.split("\n")
-#         for i in range(math.ceil(len(lines)/100)):
-#             newstring = "\n"
-#             newstring = newstring.join(lines[100*i:100+i*100])
-#             reply = transcription_prompt(newstring)
-#             with st.expander(f"{i+1}"):
-#                 st.text(reply)
 if df.empty:
     st.error('Database for interviews is empty!')
 else:
@@ -160,7 +115,7 @@ else:
                             
                             face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
                             emotion_dict = {0:'angry', 1 :'disgust', 2: 'fear', 3:'happy', 4: 'sad', 5:'surprise', 6:'neutral'}
-                            classifier = load_model('improved_vgg_fer.h5')
+                            # classifier = load_model('improved_vgg_fer.h5')
                             video_name = downloadFile(url)
                             input_file = cv2.VideoCapture("./records/temp_video.mp4") 
                             output_file = cv2.VideoWriter(
@@ -187,7 +142,11 @@ else:
                                             roi = roi_gray.astype('float') / 255.0
                                             roi = img_to_array(roi)
                                             roi = np.expand_dims(roi, axis=0)
-                                            prediction = classifier.predict(roi)[0]
+                                            data = json.dumps({"instances":roi.tolist()})
+                                            headers = {"content-type":"application/json"}
+                                            prediction = requests.post("http://localhost:8080/v1/models/fer_model:predict",data=data,headers=headers)
+                                            prediction = json.loads(prediction.text)['predictions']
+                                            # prediction = classifier.predict(roi)[0]
                                             maxindex = int(np.argmax(prediction))
                                             finalout = emotion_dict[maxindex]
                                             output = str(finalout)
