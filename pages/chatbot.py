@@ -18,6 +18,7 @@ from utility.ner import transcription_prompt
 from utility.cloud import uploadFile
 from utility.recorder import Recorder
 import keyboard
+import time
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -69,7 +70,7 @@ def videoUpload(video_dict):
     for question, file in video_dict.items():
         transcript = transcribeFile(file)
         file_url = uploadFile(file)
-        #os.remove(file)
+        os.remove(file)
         summary = transcription_prompt(transcript)
         transcript_dict[question] = transcript
         summary_dict[question] = summary
@@ -96,6 +97,7 @@ def choice_change():
 
 def record():
     recorder = Recorder(str(st.session_state.filename))
+    time.sleep(30)
     recorder.startRecording()
     while True:
         if keyboard.read_key() == "q":
@@ -129,18 +131,21 @@ try:
     personality_questions = df2['questions'][df2['personality_type'] == personality_type].values[0]
 except IndexError:
     st.warning('Please hold on as the page is loading!')
+except KeyError:
+    st.error('You have not been given your personality type, please contact HR to resolve this issue. Sorry for any inconvenience caused.')
+    st.stop()  
 
 try:
     #chatbot script
     ariel_script = [
         "Hello! I'm Ariel, a Virtual HR Interviewer with Drawmetrics.",
-        "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
+        "I'll be conducting an interview based on your Attitude Scores, recording your responses via your camera and microphone to simulate a real-life interview experience. The questions will be derived from your previous answers to our Drawmetrics attitude test, aiming to assess your 'attitude' as a candidate.",
         "Please respond with 'yes' if you acknowledge",
         "Great! Let's move on. I'm about to present your initial question. Click the pop-up recording button to start recording when you're prepared. Once finished, click the button again to submit. Keep in mind, there won't be any retakes, mirroring the authenticity of a real-life interview.",
         "Sure, please click 'yes' when you are ready to move on.",    
         "This is the end of the interview thank you for your time. Please do not close or exit this page until the next message appears. Thank you for your cooperation.",
         "Thank you for your patience, you may now close this page. Goodbye.",
-        "After you click the start button, you have about 30-60s of preperation time. Once the webcam is set up, you may test your microphone for the first 10 seconds and mute the audio at the bottom right of the camera should you want to turn off microphone feedback. I wish you the best for this interview, good luck!"
+        "After clicking the start button, you may take 30 seconds to prepare. Once the webcam is set up (there will be a camera window on your taskbar), you may test your microphone for the first 10 seconds. When you are done answering the question click the 'q' button on your keyboard to end the recording. Please face the camera at all times. I wish you the best for this interview, good luck!"
     ] 
     ariel_script = ariel_script + personality_questions
 
@@ -150,8 +155,7 @@ except NameError:
 st.title('HR Interview Chatbot :robot_face:')
 
 try:
-    if 'name' in df:
-        if applicantName in df['name'].unique():
+    if 'name' in df and applicantName in df['name'].unique():
             st.success('You have successfully completed the interview!')
     else:
         initialize_session_state()

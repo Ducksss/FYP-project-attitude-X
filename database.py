@@ -4,9 +4,9 @@ import pandas as pd
 import streamlit as st
 
 #local host
-mongo_url = "mongodb://localhost:27017"
+# mongo_url = "mongodb://localhost:27017"
 #docker 
-# mongo_url = "mongodb://localhost:27012"
+mongo_url = "mongodb://localhost:27012"
 
 myclient = pymongo.MongoClient(mongo_url)   
 # myclient = pymongo.MongoClient('', 27017)
