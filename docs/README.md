@@ -20,3 +20,9 @@ streamlit run app.py
 
 ## To clear images:
 docker system prune --all --volumes --force
+
+## In case of dependancy error:
+pip freeze > remove.txt
+pip uninstall -r remove.txt -y
+
+Repeat step 7 onwards.
