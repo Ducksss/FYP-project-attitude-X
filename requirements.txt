@@ -10,7 +10,6 @@ keyboard==0.13.5
 numpy==1.26.3
 openai==1.10.0
 pandas==2.2.0
-pdfminer==20191125
 pdfminer.six==20221105
 Pillow==10.2.0
 plotly==5.18.0
