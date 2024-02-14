@@ -12,8 +12,11 @@ Instructions to run code:
 4. Drag the contents of the zip file into /FYP-project-attitude-X
 5. Open up command prompt
 6. cd into /FYP-project-attitude-X
-7. Run the command:
+7. Run the following commands:
+pip install -r requirements.txt
 docker-compose up --build
+8. To run the streamlit application:
+streamlit run app.py
 
-#To clear images
+# To clear images:
 docker system prune --all --volumes --force
