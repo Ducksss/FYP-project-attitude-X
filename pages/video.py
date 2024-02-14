@@ -119,8 +119,8 @@ else:
                             video_name = downloadFile(url)
                             input_file = cv2.VideoCapture("./records/temp_video.mp4") 
                             output_file = cv2.VideoWriter(
-                                "records/temp_video_bounding.mp4", cv2.VideoWriter_fourcc(*'MP4V'),
-                                30, (640, 480)) 
+                                "records/temp_video_bounding.mp4", cv2.VideoWriter_fourcc(*'mp4v'),
+                                15, (640, 480)) 
 
                             while(True): 
                                 ret, frame = input_file.read() 

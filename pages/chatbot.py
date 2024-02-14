@@ -128,7 +128,7 @@ try:
     personality_type = df3['personality_type'][df3['applicant'] == applicantName].values[0]
     personality_questions = df2['questions'][df2['personality_type'] == personality_type].values[0]
 except IndexError:
-    st.warning('Please hold on as the page is loading!')
+    st.warning('Please hold on as the page is loading! If the page loading persists after a long perioid of time, you may not have been given your personality type, please contact HR to resolve this issue.')
 except KeyError:
     st.error('You have not been given your personality type, please contact HR to resolve this issue. Sorry for any inconvenience caused.')
     st.stop()  
