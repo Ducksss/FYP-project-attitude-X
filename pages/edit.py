@@ -68,7 +68,7 @@ with col1:
             counter = get_counter(get_applicantPers())
             df1 = get_ovr_score_desc(0.4,0.4,0.2)
             df2 = get_personality()
-            try:
+            if not df1.empty and not df2.empty:
                 with st.form('Insert Applicant/Personality',clear_on_submit=True):
                     applicant = st.selectbox('Who is the Applicant? :office_worker:',[x for x in df1['name'].unique()],index=None,placeholder='Select applicant...')
                     st.divider()
@@ -80,11 +80,12 @@ with col1:
                         else:
                             st.toast(':red[Hey!] Value for applicant or personality is empty!', icon='👺')
 
-            except KeyError:
-                st.error("Either applicant's scoring database or Personality database is empty!")
+            else:
+                st.error("Either Applicant's Scoring database or Personality database is empty!")
 
         else:
             st.error('Please select a database!')
+
         with tab2:
             try:
                 if st.session_state.db == 'Personality':
@@ -103,9 +104,15 @@ with col1:
                         if st.button('Update'):
                             if updated_val == current_val:
                                 st.toast(':red[Hey!] Updated value is the same as the current value!', icon='👺')
+                                print(isinstance(updated_val,list))
                             elif isinstance(updated_val,list) == False:
                                 if updated_val.strip()=='':
                                     st.toast(':red[Hey!] Updated value is empty!', icon='👺')
+                                else:
+                                    update_personality(int(st.session_state.id[0]),st.session_state.column,updated_val)
+                                    st.toast(f"Database has been :green[successfully updated]!", icon='🎉')
+                                    time.sleep(0.2)
+                                    st.rerun()
                             else:
                                 update_personality(int(st.session_state.id[0]),st.session_state.column,updated_val)
                                 st.toast(f"Database has been :green[successfully updated]!", icon='🎉')
@@ -125,6 +132,7 @@ with col1:
                             updated_val = st.selectbox('Which Applicant to update to? :office_worker:',df2['name'].unique(),index=None,placeholder='Select applicant...')
                         else:
                             updated_val = st.selectbox('What Question(s) to update to? :speech_balloon:',df3['personality_type'].unique(),index=None,placeholder='Select personality type...')
+                        
                         if st.button('Update'):
                             if updated_val == current_val:
                                 st.toast(':red[Hey!] Updated value is the same as the current value!', icon='👺')
@@ -141,7 +149,7 @@ with col1:
 
             except KeyError:
                 if st.session_state.db == 'Applicant/Personality':
-                    st.error("Either applicant's scoring database, Applicant/Personality or Personality database is empty!")
+                    st.error("Either Applicant's Scoring database, Applicant/Personality or Personality database is empty!")
                 else:
                     st.error("Personality database is empty!")
                     

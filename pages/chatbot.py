@@ -18,7 +18,6 @@ from utility.ner import transcription_prompt
 from utility.cloud import uploadFile
 from utility.recorder import Recorder
 import keyboard
-import time
 
 ##Importing Funnctions
 from streamlit_extras.switch_page_button import switch_page
@@ -97,7 +96,6 @@ def choice_change():
 
 def record():
     recorder = Recorder(str(st.session_state.filename))
-    time.sleep(30)
     recorder.startRecording()
     while True:
         if keyboard.read_key() == "q":

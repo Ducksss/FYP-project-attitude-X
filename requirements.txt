@@ -1,6 +1,8 @@
 altair==5.2.0
+auditok=0.2.0
 extra_streamlit_components==0.1.60
 ffmpeg==1.4
+ffmpeg-python==0.2.0
 graphviz==0.20.1
 tensorflow==2.15.0
 keras==2.15.0
