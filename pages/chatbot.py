@@ -128,7 +128,7 @@ try:
     personality_type = df3['personality_type'][df3['applicant'] == applicantName].values[0]
     personality_questions = df2['questions'][df2['personality_type'] == personality_type].values[0]
 except IndexError:
-    st.warning('Please hold on as the page is loading! If the page loading persists after a long perioid of time, you may not have been given your personality type, please contact HR to resolve this issue.')
+    st.warning('Please hold on as the page is loading! If the page loading persists after a long period of time, you may not have been given your personality type, please contact HR to resolve this issue.')
 except KeyError:
     st.error('You have not been given your personality type, please contact HR to resolve this issue. Sorry for any inconvenience caused.')
     st.stop()  
@@ -143,7 +143,7 @@ try:
         "Sure, please click 'yes' when you are ready to move on.",    
         "This is the end of the interview thank you for your time. Please do not close or exit this page until the next message appears. Thank you for your cooperation.",
         "Thank you for your patience, you may now close this page. Goodbye.",
-        "After clicking the start button, you may take 30 seconds to prepare. Once the webcam is set up (there will be a camera window on your taskbar), you may test your microphone for the first 10 seconds. When you are done answering the question click the 'q' button on your keyboard to end the recording. Please face the camera at all times. I wish you the best for this interview, good luck!"
+        "After clicking the start button, you may take a few seconds to prepare. Once the webcam is set up (there will be a camera window on your taskbar), ensure that your head is positioned around the middle of the camera, move your laptop further back if you have to. When you are done answering the question click the 'q' button on your keyboard to end the recording. Please face the camera at all times. I wish you the best for this interview, good luck!"
     ] 
     ariel_script = ariel_script + personality_questions
 

@@ -59,8 +59,11 @@ with col1:
                 questionList = question.split('\n')
                 if st.form_submit_button('Insert'):
                     if p_type.strip() != '' and len(questionList) != 0:
-                        insert_personality(counter,p_type,questionList)
-                        st.toast(f"Entry has been :green[successfully uploaded]!", icon='🎉')
+                        if len(questionList) == 3:
+                            insert_personality(counter,p_type,questionList)
+                            st.toast(f"Entry has been :green[successfully uploaded]!", icon='🎉')
+                        else:
+                            st.toast(':red[Hey!] Make sure there are exactly 3 questions!', icon='👺')
                     else:
                         st.toast(':red[Hey!] Value for personality or question(s) is/are empty!', icon='👺')
 
@@ -104,7 +107,6 @@ with col1:
                         if st.button('Update'):
                             if updated_val == current_val:
                                 st.toast(':red[Hey!] Updated value is the same as the current value!', icon='👺')
-                                print(isinstance(updated_val,list))
                             elif isinstance(updated_val,list) == False:
                                 if updated_val.strip()=='':
                                     st.toast(':red[Hey!] Updated value is empty!', icon='👺')
@@ -114,10 +116,13 @@ with col1:
                                     time.sleep(0.2)
                                     st.rerun()
                             else:
-                                update_personality(int(st.session_state.id[0]),st.session_state.column,updated_val)
-                                st.toast(f"Database has been :green[successfully updated]!", icon='🎉')
-                                time.sleep(0.2)
-                                st.rerun()
+                                if len(updated_val) == 3:
+                                    update_personality(int(st.session_state.id[0]),st.session_state.column,updated_val)
+                                    st.toast(f"Database has been :green[successfully updated]!", icon='🎉')
+                                    time.sleep(0.2)
+                                    st.rerun()
+                                else:
+                                    st.toast(':red[Hey!] Make sure there are exactly 3 questions!', icon='👺')
 
                 elif st.session_state.db == 'Applicant/Personality':
                     df1 = get_applicantPers()
