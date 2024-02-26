@@ -1,8 +1,0 @@
-[theme]
-base="light"
-primaryColor="#628395"
-secondaryBackgroundColor="#c8a2ca"
-textColor="#0c1b33"
-
-[server]
-enableStaticServing = true

@@ -1,0 +1,134 @@
+#home-page, .e1nzilvr1{
+    color: #8a728b;
+}
+
+section[role=button]{
+    background-image: linear-gradient(to right, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
+    width: 100%;
+    height: 150px;
+    text-transform: uppercase;
+    font-family: system-ui;
+    font-weight: bold;
+    font-size: 16px;
+    color: #372549
+}
+
+.e1b2p2ww15 .st-emotion-cache-10sgout.ef3psqc12{
+    display: none;
+}
+
+div[data-baseweb=select] div{
+    background-color: #fdfdfd;
+}
+
+.st-emotion-cache-1qe3szo{
+    font-size: 10.5px;
+}
+
+.st-emotion-cache-1fttcpj.e1b2p2ww11{
+    width: max-content;
+    height: max-content;
+}
+
+.st-emotion-cache-9ycgxx.e1b2p2ww12{
+    visibility: hidden;
+    position: relative;
+}
+
+.st-emotion-cache-9ycgxx.e1b2p2ww12:after{
+    content: 'DRAG AND DROP HERE';
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+}
+
+.st-emotion-cache-u8hs99.e1b2p2ww14{
+    margin:auto;
+}
+
+.st-emotion-cache-6qob1r.eczjsme3{
+    background-image: linear-gradient(to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%);
+}
+
+.ef3psqc12,.ef3psqc7{
+    background-color: #372549 ;
+    color: #fdcbf1 ;
+}
+
+.ef3psqc12:hover,.ef3psqc7:hover{
+    background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+    color: #372549 ;
+}
+
+input[aria-label=Username],input[aria-label=Email],input[aria-label=Password],button[aria-label='Show password text'],button[aria-label='Hide password text'],div[data-testid="textInputRootElement"]{
+    background-color: whitesmoke;
+}
+
+input[aria-label='Timestamp Input (seconds)']{
+    background-color: white;
+}
+
+textarea[aria-label='What are the questions to be asked for this Personality Type? (separate questions using "Enter") :speech_balloon:'],
+textarea[aria-label='What question(s) to update to? :speech_balloon:'],
+input[aria-label='What is the new personality? :face_with_monocle:'],
+input[aria-label='What is the name of the Personality Type? :face_with_monocle:']
+{
+    background-color: #FDFDFD;
+}
+
+.e1f1d6gn4{
+    padding-top: 10px;
+}
+
+.ef3psqc13{
+    background-color: rgb(255, 106, 106);
+    color: white
+}
+
+.ef3psqc13:hover{
+    background-color: white;
+    color: rgb(255, 106, 106);
+
+}
+
+div[data-testid="stForm"]{
+    border:0
+}
+
+.st-emotion-cache-pe32b6 *{
+    font-size: 18px;
+}
+
+.chat-row{
+    display: flex;
+    margin: 5px;
+    width: 100%;
+}
+
+.row-reverse{
+    flex-direction: row-reverse;
+}
+
+.chat-bubble {
+    font-family: "Source Sans Pro";
+    border: 1px solid transparent;
+    padding: 5px 10px;
+    margin: 0px 50px;
+    max-width: 70%;
+}
+
+.ai-bubble {
+    background-color: rgb(240,242,246);
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.human-bubble {
+    background: linear-gradient(135deg, rgb(0, 178, 255) 0%, rgb(0, 106, 255) 100%); 
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}

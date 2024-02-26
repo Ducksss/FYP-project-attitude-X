@@ -1,0 +1,7 @@
+__pycache__/
+docs/config.json
+ffmpeg.exe
+ffprobe.exe
+ffplay.exe
+trained_model/
+models/fer_model/
